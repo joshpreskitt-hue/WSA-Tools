@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WSA Work Order — Staff Announcement Email</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#F4F5F7;padding:32px 16px}
+
+.page-label{max-width:680px;margin:0 auto 20px;font-size:12px;color:#888;text-align:center}
+.copy-bar{max-width:680px;margin:0 auto 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.copy-bar h2{font-size:14px;font-weight:700;color:#271A70}
+.copy-btn{background:#271A70;color:#BFA95F;border:none;padding:8px 18px;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer}
+.copy-btn:hover{background:#3d2ba0}
+
+/* Email chrome */
+.shell{background:#fff;border:1px solid #E0E0E0;border-radius:8px;overflow:hidden;max-width:680px;margin:0 auto;box-shadow:0 2px 12px rgba(0,0,0,.07)}
+.chrome{background:#F5F5F7;border-bottom:1px solid #e0e0e0;padding:12px 18px}
+.chrome-row{display:flex;gap:8px;font-size:12px;color:#888;padding:2px 0}
+.chrome-lbl{width:45px;flex-shrink:0;font-weight:600}
+.chrome-val{color:#333}
+
+/* Email content */
+.e-header{background:#271A70;padding:24px 32px}
+.e-tagline{color:#BFA95F;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.e-title{color:#fff;font-size:22px;font-weight:700;line-height:1.2}
+.e-subtitle{color:#98A2AD;font-size:13px;margin-top:6px}
+.e-body{padding:28px 32px}
+.e-p{font-size:14px;color:#444;line-height:1.8;margin-bottom:16px}
+.e-p strong{color:#1a1a1a}
+.divider{border:none;border-top:1px solid #F0F0F0;margin:22px 0}
+
+/* How to submit */
+.how-box{background:#F8F8FC;border-left:4px solid #271A70;border-radius:0 8px 8px 0;padding:18px 22px;margin:20px 0}
+.how-box h3{color:#271A70;font-size:14px;font-weight:700;margin-bottom:12px}
+.how-step{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
+.how-step:last-child{margin-bottom:0}
+.step-num{width:24px;height:24px;background:#271A70;color:#BFA95F;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:1px}
+.step-text{font-size:13px;color:#444;line-height:1.6}
+
+/* What to expect */
+.expect-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+.expect-card{background:#fff;border:1px solid #E8E8E8;border-radius:8px;padding:13px 15px}
+.expect-icon{font-size:16px;margin-bottom:6px}
+.expect-title{font-size:13px;font-weight:700;color:#271A70;margin-bottom:4px}
+.expect-desc{font-size:12px;color:#666;line-height:1.5}
+
+/* Dashboard link */
+.dash-box{background:#271A70;border-radius:8px;padding:18px 22px;margin:20px 0;text-align:center}
+.dash-box p{color:#98A2AD;font-size:13px;margin-bottom:12px}
+.dash-url{display:inline-block;background:#BFA95F;color:#271A70;font-size:13px;font-weight:700;padding:10px 24px;border-radius:6px;text-decoration:none}
+
+/* Priority guide */
+.pri-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}
+.pri-card{border-radius:6px;padding:10px 14px}
+.pri-card h4{font-size:12px;font-weight:700;margin-bottom:3px}
+.pri-card p{font-size:12px;line-height:1.5}
+.pri-urg{background:#FCEBEB}.pri-urg h4,.pri-urg p{color:#A32D2D}
+.pri-high{background:#FAEEDA}.pri-high h4,.pri-high p{color:#854F0B}
+.pri-norm{background:#E6F1FB}.pri-norm h4,.pri-norm p{color:#185FA5}
+.pri-low{background:#F5F5F5}.pri-low h4,.pri-low p{color:#666}
+
+.sig{font-size:14px;color:#444;line-height:1.8}
+.sig strong{color:#1a1a1a}
+
+.e-footer{background:#F5F5F7;border-top:1px solid #e0e0e0;padding:14px 32px}
+.e-footer p{font-size:11px;color:#999;line-height:1.6}
+
+/* Print/send note */
+.send-note{max-width:680px;margin:20px auto 0;background:#EAF3DE;border:1px solid #C0DD97;border-radius:8px;padding:14px 18px;font-size:13px;color:#27500A}
+.send-note strong{font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="copy-bar">
+  <h2>Staff Announcement Email — Ready to Send</h2>
+</div>
+<div class="page-label">Copy the content below into Gmail or your school email. Update the dashboard URL and QR code note before sending.</div>
+
+<div class="shell" id="email-content">
+  <div class="chrome">
+    <div class="chrome-row"><span class="chrome-lbl">From:</span><span class="chrome-val">JP &lt;your.email@waynestem.org&gt;</span></div>
+    <div class="chrome-row"><span class="chrome-lbl">To:</span><span class="chrome-val">All WSA Staff &lt;staff@waynestem.org&gt;</span></div>
+    <div class="chrome-row"><span class="chrome-lbl">Sub:</span><span class="chrome-val">🛠 New Work Order System — How to Report Facilities Issues Starting Today</span></div>
+  </div>
+
+  <div class="e-header">
+    <div class="e-tagline">Wayne STEM Academy — Operations</div>
+    <div class="e-title">We Have a New Work Order System</div>
+    <div class="e-subtitle">Effective immediately — WSA Main Campus &amp; Satellite Campus</div>
+  </div>
+
+  <div class="e-body">
+    <p class="e-p">Team,</p>
+
+    <p class="e-p">Starting today, we are launching a centralized work order system for reporting and tracking all facilities, maintenance, and IT issues across both campuses. This replaces verbal reports, texts, and informal emails — and means <strong>every request gets logged, tracked, and followed up on automatically.</strong></p>
+
+    <p class="e-p">Here is what you need to know.</p>
+
+    <hr class="divider">
+
+    <div class="how-box">
+      <h3>How to Submit a Work Order</h3>
+      <div class="how-step">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Scan the QR code</strong> posted in your break room, front office, or custodial area — or click the link below. Takes less than 2 minutes from your phone.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Fill out the short form.</strong> Tell us your name, email, campus, what kind of issue it is, where it is, how urgent it is, and describe the problem. You can also attach a photo.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>You're done.</strong> You'll receive an email confirmation with your work order number within seconds. No follow-up needed on your end.</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <p class="e-p" style="font-size:15px;font-weight:700;color:#271A70;margin-bottom:12px">What happens after you submit</p>
+
+    <div class="expect-grid">
+      <div class="expect-card">
+        <div class="expect-icon">📧</div>
+        <div class="expect-title">Instant confirmation</div>
+        <div class="expect-desc">You'll receive an email with your work order number and a summary of what you submitted.</div>
+      </div>
+      <div class="expect-card">
+        <div class="expect-icon">🔔</div>
+        <div class="expect-title">Status updates</div>
+        <div class="expect-desc">You'll be notified by email whenever your work order status changes — no need to check in with anyone.</div>
+      </div>
+      <div class="expect-card">
+        <div class="expect-icon">✅</div>
+        <div class="expect-title">Closure notification</div>
+        <div class="expect-desc">When your issue is resolved, you'll receive a final email with a summary of what was done.</div>
+      </div>
+      <div class="expect-card">
+        <div class="expect-icon">📊</div>
+        <div class="expect-title">Live dashboard</div>
+        <div class="expect-desc">You can check the status of any work order — yours or anyone else's — on the team dashboard.</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <p class="e-p" style="font-size:15px;font-weight:700;color:#271A70;margin-bottom:12px">How to choose the right priority</p>
+
+    <div class="pri-grid">
+      <div class="pri-card pri-urg">
+        <h4>🔴 Urgent</h4>
+        <p>Safety hazard, water leak, no power, broken lock, or anything that requires immediate attention today.</p>
+      </div>
+      <div class="pri-card pri-high">
+        <h4>🟠 High</h4>
+        <p>Significantly impacts teaching or learning and should be addressed within 1–2 days.</p>
+      </div>
+      <div class="pri-card pri-norm">
+        <h4>🔵 Normal</h4>
+        <p>A real issue that should be fixed but doesn't prevent normal operations. Within the week is fine.</p>
+      </div>
+      <div class="pri-card pri-low">
+        <h4>⚪ Low</h4>
+        <p>Minor cosmetic or convenience issue with no real urgency. When time allows.</p>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="dash-box">
+      <p>Track any work order on the live team dashboard — viewable from any device, no login required.</p>
+      <span class="dash-url">[ Paste your Web App URL here ]</span>
+    </div>
+
+    <hr class="divider">
+
+    <p class="e-p"><strong>A few important reminders:</strong></p>
+    <p class="e-p">For <strong>true emergencies</strong> — fire, injury, or imminent danger — always call 911 and contact administration directly first. The work order system is not a substitute for emergency response.</p>
+    <p class="e-p">Please use the system for <strong>all</strong> facilities and IT requests going forward, even small ones. Every submission helps us track patterns, allocate resources, and demonstrate operational accountability.</p>
+    <p class="e-p">Questions? Come see me directly or submit a work order under the category "Other."</p>
+
+    <hr class="divider">
+
+    <div class="sig">
+      <p><strong>[Your Name]</strong><br>
+      Director of Operations &amp; Leadership<br>
+      Wayne STEM Academy<br>
+      <span style="color:#888;font-size:13px">your.email@waynestem.org</span></p>
+    </div>
+  </div>
+
+  <div class="e-footer">
+    <p>Wayne STEM Academy — Operations Department<br>
+    WSA Main Campus &amp; Satellite Campus</p>
+  </div>
+</div>
+
+<div class="send-note">
+  <strong>Before sending:</strong> Replace "[ Paste your Web App URL here ]" with your actual dashboard URL from Step 6 of the setup guide. Also confirm your QR codes are posted at both campuses before this email goes out — staff will look for them immediately.
+</div>
+
+</body>
+</html>

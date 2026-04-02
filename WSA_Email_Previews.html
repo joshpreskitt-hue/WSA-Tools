@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WSA Work Order — Email Preview Gallery</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#F4F5F7;min-height:100vh}
+
+/* ── Navigation ── */
+.nav{background:#271A70;padding:0;position:sticky;top:0;z-index:200}
+.nav-inner{max-width:900px;margin:0 auto;padding:0 20px;display:flex;align-items:center;gap:0;overflow-x:auto}
+.nav-brand{color:#BFA95F;font-size:13px;font-weight:700;padding:16px 20px 16px 0;border-right:1px solid rgba(255,255,255,.15);margin-right:4px;white-space:nowrap;flex-shrink:0}
+.nav-tab{padding:16px 14px;color:#98A2AD;font-size:12px;cursor:pointer;border-bottom:3px solid transparent;transition:color .15s,border-color .15s;white-space:nowrap;flex-shrink:0;user-select:none}
+.nav-tab:hover{color:#fff}
+.nav-tab.active{color:#BFA95F;border-bottom-color:#BFA95F}
+
+/* ── Page layout ── */
+.page{display:none;max-width:900px;margin:0 auto;padding:28px 20px 48px}
+.page.active{display:block}
+.page-header{margin-bottom:22px}
+.page-header h2{font-size:18px;font-weight:700;color:#271A70;margin-bottom:4px}
+.page-header p{font-size:13px;color:#666}
+.trigger-chip{display:inline-block;background:#BFA95F;color:#271A70;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:4px;margin-bottom:10px}
+
+/* ── Email shell ── */
+.email-shell{background:#fff;border:1px solid #E0E0E0;border-radius:8px;overflow:hidden;max-width:640px;margin:0 auto;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.shell-chrome{background:#F5F5F7;border-bottom:1px solid #E0E0E0;padding:10px 16px}
+.shell-field{display:flex;gap:8px;font-size:12px;color:#888;padding:2px 0}
+.shell-label{width:40px;flex-shrink:0;font-weight:600}
+.shell-val{color:#333}
+
+/* ── Email internals ── */
+.e-header-purple{background:#271A70;padding:22px 28px;border-radius:0}
+.e-header-green{background:#27694A;padding:22px 28px;border-radius:0}
+.e-tag{color:#BFA95F;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.e-tag-green{color:#9FE1CB;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.e-title{color:#fff;font-size:20px;font-weight:700}
+.e-subtitle{color:#98A2AD;font-size:13px;margin-top:5px}
+.e-subtitle-green{color:#9FE1CB;font-size:13px;margin-top:5px}
+.e-body{padding:24px 28px}
+.e-p{font-size:14px;color:#444;line-height:1.7;margin-bottom:14px}
+.e-box{background:#F8F8FC;border-left:4px solid #271A70;border-radius:0 8px 8px 0;padding:16px 20px;margin:16px 0}
+.e-box-green{background:#F2FAF6;border-left:4px solid #3B6D11;border-radius:0 8px 8px 0;padding:16px 20px;margin:16px 0}
+.e-wo{color:#271A70;font-size:20px;font-weight:700;margin-bottom:12px}
+.e-tbl{width:100%;border-collapse:collapse}
+.e-tbl td{padding:7px 0;font-size:13px;border-bottom:1px solid #F0F0F0;vertical-align:top}
+.e-tbl td:first-child{color:#777;width:145px}
+.e-tbl td:last-child{color:#1a1a1a;font-weight:500}
+.e-footer{background:#F5F5F7;border-top:1px solid #e0e0e0;padding:13px 28px}
+.e-footer p{font-size:11px;color:#999;line-height:1.6}
+
+/* ── Badges ── */
+.b-open{background:#FAEEDA;color:#854F0B;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;display:inline-block}
+.b-prog{background:#E6F1FB;color:#185FA5;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;display:inline-block}
+.b-done{background:#EAF3DE;color:#3B6D11;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;display:inline-block}
+.b-hold{background:#FCEBEB;color:#A32D2D;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;display:inline-block}
+.b-urg{background:#FCEBEB;color:#A32D2D;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;display:inline-block}
+.b-high{background:#FAEEDA;color:#854F0B;padding:2px 10px;border-radius:4px;font-size:12px;font-weight:700;display:inline-block}
+
+/* ── Digest stats ── */
+.digest-stats{display:flex;gap:12px;margin-bottom:20px}
+.d-stat{flex:1;border-radius:8px;padding:14px;text-align:center}
+.d-stat-num{font-size:26px;font-weight:700}
+.d-stat-lbl{font-size:11px;margin-top:3px}
+.ds-open{background:#F0EDF8}.ds-open .d-stat-num{color:#271A70}.ds-open .d-stat-lbl{color:#666}
+.ds-urg{background:#FCEBEB}.ds-urg .d-stat-num,.ds-urg .d-stat-lbl{color:#A32D2D}
+.ds-ovd{background:#FAEEDA}.ds-ovd .d-stat-num,.ds-ovd .d-stat-lbl{color:#854F0B}
+
+/* ── Digest table ── */
+.d-tbl{width:100%;border-collapse:collapse}
+.d-tbl th{background:#271A70;color:#BFA95F;padding:9px 10px;font-size:11px;text-align:left}
+.d-tbl td{padding:8px 10px;font-size:12px;border-bottom:1px solid #eee}
+.d-wo{color:#271A70;font-weight:700}
+
+/* ── Monthly stats ── */
+.m-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.m-stat{border-radius:8px;padding:14px;text-align:center}
+.m-stat-num{font-size:22px;font-weight:700}
+.m-stat-lbl{font-size:11px;margin-top:3px}
+.ms-1{background:#F0EDF8}.ms-1 .m-stat-num{color:#271A70}.ms-1 .m-stat-lbl{color:#666}
+.ms-2{background:#EAF3DE}.ms-2 .m-stat-num,.ms-2 .m-stat-lbl{color:#3B6D11}
+.ms-3{background:#FAEEDA}.ms-3 .m-stat-num,.ms-3 .m-stat-lbl{color:#854F0B}
+.ms-4{background:#F0EDF8}.ms-4 .m-stat-num{color:#271A70}.ms-4 .m-stat-lbl{color:#666}
+
+.m-tbl{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:13px}
+.m-tbl th{background:#271A70;color:#BFA95F;padding:9px 10px;font-size:11px;text-align:left}
+.m-tbl td{padding:8px 10px;border-bottom:1px solid #eee}
+.m-avg{background:#F0EDF8;border-radius:8px;padding:16px;text-align:center}
+.m-avg-num{font-size:22px;font-weight:700;color:#271A70}
+.m-avg-lbl{font-size:12px;color:#666;margin-top:4px}
+
+.note-box{background:#fff;border:1px solid #E0DCF0;border-radius:8px;padding:14px 16px;margin-top:16px;font-size:13px;color:#444;max-width:640px;margin-left:auto;margin-right:auto}
+.note-box strong{color:#271A70}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <div class="nav-inner">
+    <div class="nav-brand">WSA Email Previews</div>
+    <div class="nav-tab active" onclick="show(0,this)">1 · Confirmation</div>
+    <div class="nav-tab" onclick="show(1,this)">2 · JP Alert</div>
+    <div class="nav-tab" onclick="show(2,this)">3 · Status Update</div>
+    <div class="nav-tab" onclick="show(3,this)">4 · Closure</div>
+    <div class="nav-tab" onclick="show(4,this)">5 · Weekly Digest</div>
+    <div class="nav-tab" onclick="show(5,this)">6 · Monthly Report</div>
+  </div>
+</div>
+
+
+<!-- EMAIL 1: Confirmation to Submitter -->
+<div class="page active" id="p0">
+  <div class="page-header">
+    <div class="trigger-chip">Trigger: Form Submitted</div>
+    <h2>Email 1 — Submission Confirmation</h2>
+    <p>Sent automatically to the staff member who submitted the work order. Fires within seconds of submission.</p>
+  </div>
+  <div class="email-shell">
+    <div class="shell-chrome">
+      <div class="shell-field"><span class="shell-label">From:</span><span class="shell-val">WSA Operations &lt;your.email@waynestem.org&gt;</span></div>
+      <div class="shell-field"><span class="shell-label">To:</span><span class="shell-val">T. Williams &lt;t.williams@waynestem.org&gt;</span></div>
+      <div class="shell-field"><span class="shell-label">Sub:</span><span class="shell-val">Work Order Received — WO-26-001 | Wayne STEM Academy</span></div>
+    </div>
+    <div class="e-header-purple">
+      <div class="e-tag">Wayne STEM Academy — Operations</div>
+      <div class="e-title">Work Order Received</div>
+      <div class="e-subtitle">Submitted on April 1, 2026</div>
+    </div>
+    <div class="e-body">
+      <p class="e-p">Hi T. Williams,</p>
+      <p class="e-p">Your work order has been received and logged. You will receive an email notification each time the status is updated, and a final confirmation when it is resolved.</p>
+      <div class="e-box">
+        <div class="e-wo">WO-26-001</div>
+        <table class="e-tbl">
+          <tr><td>Status</td><td><span class="b-open">Open</span></td></tr>
+          <tr><td>Priority</td><td><span class="b-urg">Urgent</span></td></tr>
+          <tr><td>Campus</td><td>WSA Main Campus</td></tr>
+          <tr><td>Category</td><td>HVAC</td></tr>
+          <tr><td>Room / Area</td><td>Room 204</td></tr>
+          <tr><td>Description</td><td>AC unit not cooling — classroom temperature is over 80°F</td></tr>
+        </table>
+      </div>
+      <p class="e-p" style="margin-bottom:0">If this is an emergency or safety issue, please contact the Operations Office immediately.</p>
+    </div>
+    <div class="e-footer"><p>This is an automated message from the WSA Work Order System. Do not reply to this email.<br>For urgent issues, contact the Operations Office directly.</p></div>
+  </div>
+  <div class="note-box"><strong>Note:</strong> The WO number, all form field values, priority badge, and date are populated automatically. No manual action required from you on this email.</div>
+</div>
+
+
+<!-- EMAIL 2: New Alert to JP -->
+<div class="page" id="p1">
+  <div class="page-header">
+    <div class="trigger-chip">Trigger: Form Submitted</div>
+    <h2>Email 2 — New Submission Alert to JP</h2>
+    <p>Sent to you simultaneously with the submitter's confirmation. Gives you everything you need to assign and prioritize without opening the Sheet.</p>
+  </div>
+  <div class="email-shell">
+    <div class="shell-chrome">
+      <div class="shell-field"><span class="shell-label">From:</span><span class="shell-val">WSA Operations &lt;your.email@waynestem.org&gt;</span></div>
+      <div class="shell-field"><span class="shell-label">To:</span><span class="shell-val">JP &lt;your.email@waynestem.org&gt;</span></div>
+      <div class="shell-field"><span class="shell-label">Sub:</span><span class="shell-val">New Work Order — WO-26-001 | Urgent Priority | WSA Main Campus</span></div>
+    </div>
+    <div class="e-header-purple">
+      <div class="e-tag">Wayne STEM Academy — Operations</div>
+      <div class="e-title">New Work Order — WO-26-001</div>
+      <div class="e-subtitle">Submitted by T. Williams on April 1, 2026</div>
+    </div>
+    <div class="e-body">
+      <div class="e-box">
+        <div class="e-wo">WO-26-001</div>
+        <table class="e-tbl">
+          <tr><td>Priority</td><td><span class="b-urg">Urgent</span></td></tr>
+          <tr><td>Campus</td><td>WSA Main Campus</td></tr>
+          <tr><td>Category</td><td>HVAC</td></tr>
+          <tr><td>Room / Area</td><td>Room 204</td></tr>
+          <tr><td>Submitted by</td><td>T. Williams</td></tr>
+          <tr><td>Description</td><td>AC unit not cooling — classroom temperature is over 80°F</td></tr>
+        </table>
+      </div>
+      <p class="e-p" style="margin-bottom:0">Open the Work Order Sheet to assign this work order and update its status.</p>
+    </div>
+    <div class="e-footer"><p>This is an automated message from the WSA Work Order System. Do not reply to this email.<br>For urgent issues, contact the Operations Office directly.</p></div>
+  </div>
+  <div class="note-box"><strong>Note:</strong> The subject line includes priority and campus so you can triage from your inbox without opening the email. Urgent items will always say "Urgent Priority" in the subject.</div>
+</div>
+
+
+<!-- EMAIL 3: Status Update -->
+<div class="page" id="p2">
+  <div class="page-header">
+    <div class="trigger-chip">Trigger: Status Changed in Sheet (any status except Completed)</div>
+    <h2>Email 3 — Status Update to Submitter</h2>
+    <p>Fires automatically when you change the Status column (col L) to "In Progress" or "On Hold." Keeps submitters informed without you writing a single word.</p>
+  </div>
+  <div class="email-shell">
+    <div class="shell-chrome">
+      <div class="shell-field"><span class="shell-label">From:</span><span class="shell-val">WSA Operations &lt;your.email@waynestem.org&gt;</span></div>
+      <div class="shell-field"><span class="shell-label">To:</span><span class="shell-val">T. Williams &lt;t.williams@waynestem.org&gt;</span></div>
+      <div class="shell-field"><span class="shell-label">Sub:</span><span class="shell-val">Work Order Update — WO-26-001 | In Progress | Wayne STEM Academy</span></div>
+    </div>
+    <div class="e-header-purple">
+      <div class="e-tag">Wayne STEM Academy — Operations</div>
+      <div class="e-title">Work Order Update</div>
+      <div class="e-subtitle">Status updated on April 2, 2026</div>
+    </div>
+    <div class="e-body">
+      <p class="e-p">Hi T. Williams,</p>
+      <p class="e-p">There has been an update to your work order. The details are below.</p>
+      <div class="e-box">
+        <div class="e-wo">WO-26-001</div>
+        <table class="e-tbl">
+          <tr><td>New Status</td><td><span class="b-prog">In Progress</span></td></tr>
+          <tr><td>Campus</td><td>WSA Main Campus</td></tr>
+          <tr><td>Category</td><td>HVAC</td></tr>
+          <tr><td>Room / Area</td><td>Room 204</td></tr>
+          <tr><td>Assigned to</td><td>JP</td></tr>
+        </table>
+      </div>
+      <p class="e-p" style="margin-bottom:0">You will receive another notification when your work order is fully resolved.</p>
+    </div>
+    <div class="e-footer"><p>This is an automated message from the WSA Work Order System. Do not reply to this email.<br>For urgent issues, contact the Operations Office directly.</p></div>
+  </div>
+  <div class="note-box"><strong>Note:</strong> This email fires the moment you change the cell value in the Sheet. No additional action needed. The "Assigned to" field pulls directly from col K.</div>
+</div>
+
+
+<!-- EMAIL 4: Closure -->
+<div class="page" id="p3">
+  <div class="page-header">
+    <div class="trigger-chip">Trigger: Status Changed to "Completed"</div>
+    <h2>Email 4 — Work Order Closure</h2>
+    <p>The green-themed closure email fires when you set Status to "Completed." Fill in Resolution Notes (col O) before changing the status — those notes appear in this email.</p>
+  </div>
+  <div class="email-shell">
+    <div class="shell-chrome">
+      <div class="shell-field"><span class="shell-label">From:</span><span class="shell-val">WSA Operations &lt;your.email@waynestem.org&gt;</span></div>
+      <div class="shell-field"><span class="shell-label">To:</span><span class="shell-val">T. Williams &lt;t.williams@waynestem.org&gt;</span></div>
+      <div class="shell-field"><span class="shell-label">Sub:</span><span class="shell-val">Work Order Resolved — WO-26-001 | Wayne STEM Academy</span></div>
+    </div>
+    <div class="e-header-green">
+      <div class="e-tag-green">Wayne STEM Academy — Operations</div>
+      <div class="e-title">Work Order Resolved ✓</div>
+      <div class="e-subtitle-green">Completed on April 3, 2026</div>
+    </div>
+    <div class="e-body">
+      <p class="e-p">Hi T. Williams,</p>
+      <p class="e-p">Your work order has been resolved. Here is a summary of what was completed:</p>
+      <div class="e-box-green">
+        <div class="e-wo">WO-26-001</div>
+        <table class="e-tbl">
+          <tr><td>Status</td><td><span class="b-done">Completed</span></td></tr>
+          <tr><td>Campus</td><td>WSA Main Campus</td></tr>
+          <tr><td>Category</td><td>HVAC</td></tr>
+          <tr><td>Room / Area</td><td>Room 204</td></tr>
+          <tr><td>Resolved by</td><td>JP</td></tr>
+          <tr><td>Original issue</td><td>AC unit not cooling — classroom temperature is over 80°F</td></tr>
+          <tr><td>Resolution notes</td><td><em style="color:#3B6D11">Replaced air filter and recharged refrigerant. Unit tested at 68°F output. Should hold through summer.</em></td></tr>
+        </table>
+      </div>
+      <p class="e-p" style="margin-bottom:0">If the issue returns or you have a new concern, please submit a new work order.</p>
+    </div>
+    <div class="e-footer"><p>This is an automated message from the WSA Work Order System. Do not reply to this email.<br>For urgent issues, contact the Operations Office directly.</p></div>
+  </div>
+  <div class="note-box"><strong>Best practice:</strong> Always fill col O (Resolution Notes) before changing status to Completed. A one-sentence description of what was done closes the loop professionally and reduces "did anyone fix that?" follow-ups.</div>
+</div>
+
+
+<!-- EMAIL 5: Weekly Digest -->
+<div class="page" id="p4">
+  <div class="page-header">
+    <div class="trigger-chip">Trigger: Every Monday at 7:00 AM</div>
+    <h2>Email 5 — Weekly Open Work Order Digest</h2>
+    <p>Lands in your inbox every Monday morning. Work orders are sorted by priority (Urgent first). Overdue items (open 5+ business days) are flagged with ⚠.</p>
+  </div>
+  <div class="email-shell">
+    <div class="shell-chrome">
+      <div class="shell-field"><span class="shell-label">From:</span><span class="shell-val">WSA Operations &lt;your.email@waynestem.org&gt;</span></div>
+      <div class="shell-field"><span class="shell-label">To:</span><span class="shell-val">JP &lt;your.email@waynestem.org&gt;</span></div>
+      <div class="shell-field"><span class="shell-label">Sub:</span><span class="shell-val">WSA Open Work Orders — Weekly Digest | April 7, 2026</span></div>
+    </div>
+    <div class="e-header-purple">
+      <div class="e-tag">Wayne STEM Academy — Operations</div>
+      <div class="e-title">Weekly Work Order Digest</div>
+      <div class="e-subtitle">April 7, 2026</div>
+    </div>
+    <div class="e-body">
+      <div class="digest-stats">
+        <div class="d-stat ds-open"><div class="d-stat-num">5</div><div class="d-stat-lbl">Open Work Orders</div></div>
+        <div class="d-stat ds-urg"><div class="d-stat-num">2</div><div class="d-stat-lbl">Urgent Priority</div></div>
+        <div class="d-stat ds-ovd"><div class="d-stat-num">1</div><div class="d-stat-lbl">Overdue (5+ days)</div></div>
+      </div>
+      <table class="d-tbl">
+        <thead><tr>
+          <th>WO #</th><th>Campus</th><th>Category</th><th>Room</th><th>Priority</th><th>Status</th><th>Age</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td class="d-wo">WO-26-003</td><td>Satellite</td><td>Plumbing</td><td>K Room</td>
+            <td><span class="b-urg">Urgent</span></td><td><span class="b-hold">On Hold</span></td>
+            <td>8 days <strong style="color:#A32D2D">⚠</strong></td>
+          </tr>
+          <tr>
+            <td class="d-wo">WO-26-005</td><td>Main</td><td>Safety</td><td>Hallway B</td>
+            <td><span class="b-urg">Urgent</span></td><td><span class="b-prog">In Progress</span></td>
+            <td>4 days</td>
+          </tr>
+          <tr>
+            <td class="d-wo">WO-26-002</td><td>Main</td><td>IT</td><td>Library</td>
+            <td><span class="b-high">High</span></td><td><span class="b-open">Open</span></td>
+            <td>3 days</td>
+          </tr>
+          <tr>
+            <td class="d-wo">WO-26-004</td><td>Satellite</td><td>Custodial</td><td>Restroom 1B</td>
+            <td><span class="b-open">Normal</span></td><td><span class="b-open">Open</span></td>
+            <td>2 days</td>
+          </tr>
+          <tr>
+            <td class="d-wo">WO-26-006</td><td>Main</td><td>Grounds</td><td>Parking lot</td>
+            <td><span class="b-open">Normal</span></td><td><span class="b-open">Open</span></td>
+            <td>1 day</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="e-footer"><p>This is an automated message from the WSA Work Order System. Do not reply to this email.<br>For urgent issues, contact the Operations Office directly.</p></div>
+  </div>
+  <div class="note-box"><strong>Note:</strong> If there are no open work orders, the digest will say "No open work orders this week — all clear! 🎉" instead of the table.</div>
+</div>
+
+
+<!-- EMAIL 6: Monthly Report -->
+<div class="page" id="p5">
+  <div class="page-header">
+    <div class="trigger-chip">Trigger: 1st of Every Month at 7:00 AM — Sent to JP + Dr. Forgette</div>
+    <h2>Email 6 — Monthly Facilities Report</h2>
+    <p>Automatically sent to both you and Dr. Forgette on the first of each month. Covers the prior month's activity across both campuses.</p>
+  </div>
+  <div class="email-shell">
+    <div class="shell-chrome">
+      <div class="shell-field"><span class="shell-label">From:</span><span class="shell-val">WSA Operations &lt;your.email@waynestem.org&gt;</span></div>
+      <div class="shell-field"><span class="shell-label">To:</span><span class="shell-val">JP + todd.forgette@waynestem.org</span></div>
+      <div class="shell-field"><span class="shell-label">Sub:</span><span class="shell-val">WSA Facilities Report — March 2026 | Wayne STEM Academy</span></div>
+    </div>
+    <div class="e-header-purple">
+      <div class="e-tag">Wayne STEM Academy — Operations</div>
+      <div class="e-title">Monthly Facilities Report — March 2026</div>
+      <div class="e-subtitle">Wayne STEM Academy</div>
+    </div>
+    <div class="e-body">
+      <p class="e-p">Below is a summary of all facilities work orders submitted during <strong>March 2026</strong>. This report was automatically generated and sent to JP and Dr. Forgette.</p>
+      <div class="m-grid">
+        <div class="m-stat ms-1"><div class="m-stat-num">18</div><div class="m-stat-lbl">Submitted</div></div>
+        <div class="m-stat ms-2"><div class="m-stat-num">14</div><div class="m-stat-lbl">Completed</div></div>
+        <div class="m-stat ms-3"><div class="m-stat-num">4</div><div class="m-stat-lbl">Still Open</div></div>
+        <div class="m-stat ms-4"><div class="m-stat-num">78%</div><div class="m-stat-lbl">Completion Rate</div></div>
+      </div>
+      <p style="font-size:14px;font-weight:700;color:#271A70;margin:0 0 10px">By Campus</p>
+      <table class="m-tbl">
+        <thead><tr><th>Campus</th><th>Submitted</th><th>Completed</th><th>Rate</th></tr></thead>
+        <tbody>
+          <tr><td>WSA Main Campus</td><td>11</td><td>9</td><td><strong>82%</strong></td></tr>
+          <tr><td>Satellite Campus</td><td>7</td><td>5</td><td><strong>71%</strong></td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:14px;font-weight:700;color:#271A70;margin:0 0 10px">By Category</p>
+      <table class="m-tbl">
+        <thead><tr><th>Category</th><th>Work Orders</th></tr></thead>
+        <tbody>
+          <tr><td>HVAC</td><td><strong style="color:#271A70">5</strong></td></tr>
+          <tr><td>Custodial</td><td><strong style="color:#271A70">4</strong></td></tr>
+          <tr><td>IT</td><td><strong style="color:#271A70">4</strong></td></tr>
+          <tr><td>Plumbing</td><td><strong style="color:#271A70">3</strong></td></tr>
+          <tr><td>Safety</td><td><strong style="color:#271A70">2</strong></td></tr>
+        </tbody>
+      </table>
+      <div class="m-avg"><div class="m-avg-num">2.4 days</div><div class="m-avg-lbl">Average Resolution Time</div></div>
+    </div>
+    <div class="e-footer"><p>This is an automated message from the WSA Work Order System. Do not reply to this email.<br>For urgent issues, contact the Operations Office directly.</p></div>
+  </div>
+  <div class="note-box"><strong>Note:</strong> Dr. Forgette receives this same email automatically — no action needed from you. All numbers are calculated from real data in your Sheet for the prior calendar month.</div>
+</div>
+
+
+<script>
+const pages = document.querySelectorAll('.page');
+const tabs  = document.querySelectorAll('.nav-tab');
+function show(i, el) {
+  pages.forEach(p => p.classList.remove('active'));
+  tabs.forEach(t  => t.classList.remove('active'));
+  pages[i].classList.add('active');
+  el.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>

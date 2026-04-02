@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WSA Work Order System — Setup Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: Arial, sans-serif; background: #F4F5F7; color: #1a1a1a; line-height: 1.7; }
+
+  /* ── Cover ── */
+  .cover {
+    background: #271A70;
+    padding: 52px 48px 40px;
+    color: #fff;
+  }
+  .cover-tag {
+    display: inline-block;
+    background: #BFA95F;
+    color: #271A70;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 4px;
+    margin-bottom: 18px;
+  }
+  .cover h1 { font-size: 32px; font-weight: 700; line-height: 1.2; margin-bottom: 10px; }
+  .cover p  { color: #98A2AD; font-size: 15px; }
+  .cover-meta { margin-top: 28px; display: flex; gap: 24px; flex-wrap: wrap; }
+  .cover-meta span { font-size: 12px; color: #98A2AD; }
+  .cover-meta strong { color: #BFA95F; }
+
+  /* ── Layout ── */
+  .container { max-width: 860px; margin: 0 auto; padding: 0 24px 48px; }
+  .toc-block {
+    background: #fff;
+    border: 1px solid #E8E8E8;
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin: 28px 0;
+  }
+  .toc-block h2 { font-size: 13px; font-weight: 700; color: #271A70; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 14px; }
+  .toc-block ol { padding-left: 20px; }
+  .toc-block li { font-size: 14px; color: #333; padding: 3px 0; }
+  .toc-block a  { color: #271A70; text-decoration: none; }
+  .toc-block a:hover { text-decoration: underline; }
+
+  /* ── Section headers ── */
+  .section { margin-top: 40px; }
+  .section-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; background: #271A70; color: #BFA95F;
+    font-size: 15px; font-weight: 700; border-radius: 50%; flex-shrink: 0;
+    margin-right: 12px;
+  }
+  .section-title {
+    display: flex; align-items: center; margin-bottom: 18px;
+    padding-bottom: 12px; border-bottom: 2px solid #271A70;
+  }
+  .section-title h2 { font-size: 20px; font-weight: 700; color: #271A70; }
+
+  /* ── Cards ── */
+  .card {
+    background: #fff;
+    border: 1px solid #E8E8E8;
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 14px;
+  }
+  .card h3 { font-size: 15px; font-weight: 700; margin-bottom: 10px; color: #271A70; }
+  .card p, .card li { font-size: 14px; color: #444; }
+  .card ul, .card ol { padding-left: 18px; }
+  .card li { padding: 3px 0; }
+
+  /* ── Step cards ── */
+  .step {
+    background: #fff;
+    border: 1px solid #E8E8E8;
+    border-radius: 10px;
+    padding: 18px 24px 18px 20px;
+    margin-bottom: 12px;
+    border-left: 4px solid #271A70;
+  }
+  .step-num { font-size: 11px; font-weight: 700; color: #BFA95F; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .step h3  { font-size: 15px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; }
+  .step p   { font-size: 14px; color: #555; }
+  .step ul  { padding-left: 18px; margin-top: 8px; }
+  .step li  { font-size: 14px; color: #555; padding: 2px 0; }
+
+  /* ── Code blocks ── */
+  .code-block {
+    background: #1E1A3C;
+    color: #BFA95F;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    padding: 16px 18px;
+    border-radius: 8px;
+    margin: 12px 0;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    line-height: 1.6;
+  }
+  .code-block .c  { color: #6B7DB3; }
+  .code-block .k  { color: #BFA95F; font-weight: bold; }
+  .code-block .s  { color: #9FE1CB; }
+
+  /* ── Form fields table ── */
+  .fields-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 12px; }
+  .fields-table th { background: #271A70; color: #BFA95F; padding: 9px 12px; text-align: left; font-size: 12px; }
+  .fields-table td { padding: 9px 12px; border-bottom: 1px solid #eee; color: #444; vertical-align: top; }
+  .fields-table tr:last-child td { border-bottom: none; }
+  .fields-table tr:nth-child(even) td { background: #FAFAFA; }
+  .required { font-size: 10px; font-weight: 700; color: #A32D2D; padding: 1px 6px; background: #FCEBEB; border-radius: 3px; }
+  .optional { font-size: 10px; font-weight: 700; color: #185FA5; padding: 1px 6px; background: #E6F1FB; border-radius: 3px; }
+
+  /* ── Column map table ── */
+  .col-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 12px; }
+  .col-table th { background: #271A70; color: #BFA95F; padding: 9px 12px; text-align: left; font-size: 12px; }
+  .col-table td { padding: 8px 12px; border-bottom: 1px solid #eee; color: #444; }
+  .col-table tr:nth-child(even) td { background: #FAFAFA; }
+  .col-letter { font-family: 'Courier New', monospace; font-weight: bold; color: #271A70; }
+  .auto-tag   { font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 3px; }
+  .tag-form   { background: #E6F1FB; color: #185FA5; }
+  .tag-script { background: #EAF3DE; color: #3B6D11; }
+  .tag-admin  { background: #F0EDF8; color: #534AB7; }
+  .tag-private{ background: #FCEBEB; color: #A32D2D; }
+
+  /* ── Email summary ── */
+  .email-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+  .email-card { background: #F8F8FC; border: 1px solid #E0DCF0; border-radius: 8px; padding: 14px 16px; }
+  .email-card h4 { font-size: 13px; font-weight: 700; color: #271A70; margin-bottom: 6px; }
+  .email-card p  { font-size: 12px; color: #555; }
+  .email-trigger { font-size: 10px; font-weight: 700; color: #BFA95F; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+
+  /* ── Trigger table ── */
+  .trigger-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 12px; }
+  .trigger-table th { background: #271A70; color: #BFA95F; padding: 9px 12px; text-align: left; font-size: 12px; }
+  .trigger-table td { padding: 9px 12px; border-bottom: 1px solid #eee; vertical-align: top; color: #444; }
+  .trigger-table tr:last-child td { border-bottom: none; }
+  .fn { font-family: 'Courier New', monospace; font-size: 12px; color: #271A70; font-weight: bold; }
+
+  /* ── QR section ── */
+  .qr-callout {
+    background: #F0EDF8;
+    border: 1px solid #C8C0E8;
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-top: 14px;
+  }
+  .qr-callout h4 { font-size: 14px; font-weight: 700; color: #271A70; margin-bottom: 8px; }
+  .qr-callout p  { font-size: 13px; color: #444; }
+  .qr-callout a  { color: #271A70; font-weight: 600; }
+
+  /* ── Warning & tip boxes ── */
+  .tip {
+    background: #EAF3DE; border-left: 4px solid #3B6D11; border-radius: 0 8px 8px 0;
+    padding: 12px 16px; margin: 14px 0; font-size: 13px; color: #27500A;
+  }
+  .warn {
+    background: #FAEEDA; border-left: 4px solid #854F0B; border-radius: 0 8px 8px 0;
+    padding: 12px 16px; margin: 14px 0; font-size: 13px; color: #633806;
+  }
+  .tip strong, .warn strong { font-weight: 700; }
+
+  /* ── Checklist ── */
+  .checklist { list-style: none; padding: 0; margin-top: 12px; }
+  .checklist li {
+    display: flex; align-items: flex-start; gap: 10px;
+    font-size: 14px; color: #444; padding: 6px 0;
+    border-bottom: 1px solid #F0F0F0;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .check-box {
+    width: 18px; height: 18px; border: 2px solid #271A70; border-radius: 3px;
+    flex-shrink: 0; margin-top: 2px;
+  }
+
+  /* ── Footer ── */
+  .page-footer {
+    background: #271A70; color: #98A2AD;
+    text-align: center; padding: 20px;
+    font-size: 12px; margin-top: 40px;
+  }
+  .page-footer strong { color: #BFA95F; }
+</style>
+</head>
+<body>
+
+<!-- Cover -->
+<div class="cover">
+  <div class="cover-tag">Setup Guide &amp; Reference</div>
+  <h1>WSA Work Order<br>Management System</h1>
+  <p>Google Workspace Automation — v1.0</p>
+  <div class="cover-meta">
+    <span><strong>School:</strong> Wayne STEM Academy</span>
+    <span><strong>Owner:</strong> Director of Operations &amp; Leadership</span>
+    <span><strong>Campuses:</strong> WSA Main &amp; Satellite</span>
+    <span><strong>Platform:</strong> Google Forms + Sheets + Apps Script</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Table of Contents -->
+  <div class="toc-block">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#s1">Create the Google Form</a></li>
+      <li><a href="#s2">Set up the Google Sheet</a></li>
+      <li><a href="#s3">Install the Apps Script</a></li>
+      <li><a href="#s4">Run setup functions</a></li>
+      <li><a href="#s5">Link the form to the sheet</a></li>
+      <li><a href="#s6">Publish the Web App Dashboard</a></li>
+      <li><a href="#s7">Generate &amp; post QR codes</a></li>
+      <li><a href="#s8">Email automation reference</a></li>
+      <li><a href="#s9">Column reference</a></li>
+      <li><a href="#s10">Daily operations guide</a></li>
+      <li><a href="#s11">Go-live checklist</a></li>
+    </ol>
+  </div>
+
+
+  <!-- SECTION 1 -->
+  <div class="section" id="s1">
+    <div class="section-title">
+      <div class="section-num">1</div>
+      <h2>Create the Google Form</h2>
+    </div>
+
+    <div class="card">
+      <p>Go to <strong>forms.google.com</strong> and create a new blank form. Name it <em>"WSA Work Order Request"</em> and set the theme color to purple (<code>#271A70</code>). Add the following fields in this exact order — the column mapping in your Sheet depends on this order.</p>
+    </div>
+
+    <table class="fields-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Field Label</th>
+          <th>Type</th>
+          <th>Options / Notes</th>
+          <th>Required?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1</strong></td>
+          <td>Your Full Name</td>
+          <td>Short answer</td>
+          <td>—</td>
+          <td><span class="required">Required</span></td>
+        </tr>
+        <tr>
+          <td><strong>2</strong></td>
+          <td>Your Email Address</td>
+          <td>Short answer</td>
+          <td>Enable "Response validation → Text → Email address"</td>
+          <td><span class="required">Required</span></td>
+        </tr>
+        <tr>
+          <td><strong>3</strong></td>
+          <td>Campus Location</td>
+          <td>Dropdown</td>
+          <td>WSA Main Campus / Satellite Campus</td>
+          <td><span class="required">Required</span></td>
+        </tr>
+        <tr>
+          <td><strong>4</strong></td>
+          <td>Category</td>
+          <td>Dropdown</td>
+          <td>HVAC / Plumbing / Electrical / Custodial / IT / Grounds / Safety / Other</td>
+          <td><span class="required">Required</span></td>
+        </tr>
+        <tr>
+          <td><strong>5</strong></td>
+          <td>Room / Area</td>
+          <td>Short answer</td>
+          <td>e.g. "Room 204", "Front Office", "Cafeteria"</td>
+          <td><span class="required">Required</span></td>
+        </tr>
+        <tr>
+          <td><strong>6</strong></td>
+          <td>Priority</td>
+          <td>Multiple choice</td>
+          <td>Urgent / High / Normal / Low — add brief descriptions to each option</td>
+          <td><span class="required">Required</span></td>
+        </tr>
+        <tr>
+          <td><strong>7</strong></td>
+          <td>Description of Issue</td>
+          <td>Paragraph</td>
+          <td>Instruct staff to be as specific as possible</td>
+          <td><span class="required">Required</span></td>
+        </tr>
+        <tr>
+          <td><strong>8</strong></td>
+          <td>Photo of Issue (optional)</td>
+          <td>File upload</td>
+          <td>Allow only images. Set max file size to 10 MB.</td>
+          <td><span class="optional">Optional</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="tip" style="margin-top:16px">
+      <strong>Tip:</strong> On the form settings page, turn on "Collect email addresses" → "Verified" if you want Google to pre-fill the email field for signed-in staff. This reduces typos on the submitter's email.
+    </div>
+  </div>
+
+
+  <!-- SECTION 2 -->
+  <div class="section" id="s2">
+    <div class="section-title">
+      <div class="section-num">2</div>
+      <h2>Set Up the Google Sheet</h2>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 2a</div>
+      <h3>Create a new Google Sheet</h3>
+      <p>Go to <strong>sheets.google.com</strong> and create a new blank spreadsheet. Name it <em>"WSA Work Order Database"</em>. Rename the first tab to <em>"Work Orders"</em> (must match exactly).</p>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 2b</div>
+      <h3>Share with your team</h3>
+      <p>Share the Sheet with appropriate permissions:</p>
+      <ul>
+        <li>JP — <strong>Editor</strong> access (manage all work orders)</li>
+        <li>Custodial &amp; IT leads — <strong>Commenter</strong> or <strong>Viewer</strong> access</li>
+        <li>General staff — access the Web App Dashboard instead (read-only, no Sheet access needed)</li>
+      </ul>
+    </div>
+
+    <div class="warn">
+      <strong>Important:</strong> Do not manually enter data in columns A–I. These are populated automatically by the Google Form. Manually entering data in those columns will break the column alignment and may cause email errors.
+    </div>
+  </div>
+
+
+  <!-- SECTION 3 -->
+  <div class="section" id="s3">
+    <div class="section-title">
+      <div class="section-num">3</div>
+      <h2>Install the Apps Script</h2>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 3a</div>
+      <h3>Open the Script Editor</h3>
+      <p>From your Google Sheet, go to <strong>Extensions → Apps Script</strong>. This opens the script editor in a new tab.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 3b</div>
+      <h3>Paste the script</h3>
+      <p>Delete all existing code in the editor. Open the file <strong>WSA_WorkOrder_Script.gs</strong> provided with this guide, copy the entire contents, and paste it into the editor.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 3c</div>
+      <h3>Update your email address</h3>
+      <p>Near the top of the script, find the <code>WO</code> configuration block and update <strong>JP_EMAIL</strong> with your actual email address:</p>
+      <div class="code-block"><span class="k">JP_EMAIL:</span> <span class="s">'your.actual.email@waynestem.org'</span>,  <span class="c">// ← update this</span>
+<span class="k">FORGETTE_EMAIL:</span> <span class="s">'todd.forgette@waynestem.org'</span>, <span class="c">// already set</span></div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 3d</div>
+      <h3>Save the project</h3>
+      <p>Click the floppy disk icon or press <strong>Ctrl+S</strong> (Cmd+S on Mac). Name the project <em>"WSA Work Order System"</em>.</p>
+    </div>
+  </div>
+
+
+  <!-- SECTION 4 -->
+  <div class="section" id="s4">
+    <div class="section-title">
+      <div class="section-num">4</div>
+      <h2>Run the Setup Functions</h2>
+    </div>
+
+    <div class="warn">
+      <strong>Important:</strong> Run these two functions one time only. Running them again will delete and recreate all triggers, which is harmless but unnecessary.
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 4a — Run first</div>
+      <h3>Run <code>setupSheet()</code></h3>
+      <p>In the Apps Script editor, select <strong>setupSheet</strong> from the function dropdown at the top, then click the <strong>▶ Run</strong> button. This formats your sheet: header colors, column widths, dropdown validations, and date formatting. Grant permissions when prompted.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 4b — Run second</div>
+      <h3>Run <code>setupTriggers()</code></h3>
+      <p>Select <strong>setupTriggers</strong> from the dropdown and click <strong>▶ Run</strong>. This installs 5 automated triggers:</p>
+      <ul>
+        <li>Form submit → confirmation email + WO# generation</li>
+        <li>Sheet edit → status-change emails</li>
+        <li>Weekly digest → every Monday at 7 AM</li>
+        <li>Monthly report → 1st of each month at 7 AM</li>
+        <li>Overdue check → every day at 8 AM</li>
+      </ul>
+    </div>
+
+    <div class="tip">
+      <strong>Verify triggers:</strong> After running setupTriggers(), go to <strong>Triggers</strong> (clock icon in left sidebar). You should see 5 triggers listed. If you see duplicates, run setupTriggers() once more — it clears duplicates automatically.
+    </div>
+  </div>
+
+
+  <!-- SECTION 5 -->
+  <div class="section" id="s5">
+    <div class="section-title">
+      <div class="section-num">5</div>
+      <h2>Link the Form to the Sheet</h2>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 5a</div>
+      <h3>Open your Google Form</h3>
+      <p>Go back to your form at forms.google.com. Click the <strong>Responses</strong> tab at the top.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 5b</div>
+      <h3>Link to the spreadsheet</h3>
+      <p>Click the green <strong>Spreadsheet icon</strong> (or "Link to Sheets"). Choose <em>"Select existing spreadsheet"</em> and find your <em>"WSA Work Order Database"</em> sheet. Click <strong>Select</strong>. Google will link the form responses to the "Work Orders" tab.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 5c</div>
+      <h3>Test with a practice submission</h3>
+      <p>Submit a test work order through the form. You should see a new row appear in the Sheet with all form data populated in columns A–I. Within seconds, the script should auto-fill the WO# in column J and set Status to "Open" in column L. You should also receive a confirmation email.</p>
+    </div>
+
+    <div class="warn">
+      <strong>If no WO# appears:</strong> The script trigger may not have fired. Go to Apps Script → Run <code>onFormSubmit</code> manually and check the Execution Log for errors.
+    </div>
+  </div>
+
+
+  <!-- SECTION 6 -->
+  <div class="section" id="s6">
+    <div class="section-title">
+      <div class="section-num">6</div>
+      <h2>Publish the Web App Dashboard</h2>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 6a</div>
+      <h3>Deploy as a Web App</h3>
+      <p>In Apps Script, click <strong>Deploy → New deployment</strong>. Select type: <strong>Web app</strong>. Configure as follows:</p>
+      <ul>
+        <li>Description: <em>WSA Work Order Dashboard v1</em></li>
+        <li>Execute as: <strong>Me</strong> (your Google account)</li>
+        <li>Who has access: <strong>Anyone within [your domain]</strong> (or "Anyone" if you want external access)</li>
+      </ul>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 6b</div>
+      <h3>Copy the Web App URL</h3>
+      <p>After deploying, Google will provide a Web App URL. Copy it — this is the link you'll share with your team. It will look like:<br><code>https://script.google.com/macros/s/AKfycb.../exec</code></p>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 6c</div>
+      <h3>Re-deploy after script changes</h3>
+      <p>Any time you update the script code, you must re-deploy: <strong>Deploy → Manage deployments → Edit → New version → Deploy</strong>. The URL stays the same.</p>
+    </div>
+
+    <div class="tip">
+      <strong>Bookmark it:</strong> Share the Web App URL in your staff communication platform (email, Teams, etc.) and add it as a bookmark to school-issued devices. Staff can view all open work orders from any browser without needing Google account access to the Sheet.
+    </div>
+  </div>
+
+
+  <!-- SECTION 7 -->
+  <div class="section" id="s7">
+    <div class="section-title">
+      <div class="section-num">7</div>
+      <h2>Generate &amp; Post QR Codes</h2>
+    </div>
+
+    <div class="card">
+      <p>Staff should be able to submit work orders in under 60 seconds from their phone. QR codes posted at key locations around each campus make this effortless.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 7a</div>
+      <h3>Get the form submission link</h3>
+      <p>Open your Google Form, click the <strong>Share</strong> button (or the eye/preview icon), and copy the link. It will end in <code>/viewform</code>.</p>
+    </div>
+
+    <div class="qr-callout">
+      <h4>Generate QR Codes — Free Tools</h4>
+      <p>Go to <a href="https://qr-code-generator.com" target="_blank">qr-code-generator.com</a> or <a href="https://www.qrcode-monkey.com" target="_blank">qrcode-monkey.com</a>. Paste your form URL and download a high-resolution PNG. Set the QR color to WSA Purple (<code>#271A70</code>) for branding consistency.</p>
+    </div>
+
+    <div class="step">
+      <div class="step-num">Step 7b</div>
+      <h3>Print and laminate</h3>
+      <p>Print the QR code on a half-sheet or full sheet, add the text <em>"Submit a Work Order — Scan Here"</em> in WSA branding, and laminate for durability. Post at these recommended locations:</p>
+      <ul>
+        <li>Faculty break rooms (both campuses)</li>
+        <li>Front office / main entry</li>
+        <li>Custodial supply closet</li>
+        <li>IT equipment room</li>
+        <li>Staff bulletin boards</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <!-- SECTION 8 -->
+  <div class="section" id="s8">
+    <div class="section-title">
+      <div class="section-num">8</div>
+      <h2>Email Automation Reference</h2>
+    </div>
+
+    <div class="email-grid">
+      <div class="email-card">
+        <div class="email-trigger">Trigger: Form Submitted</div>
+        <h4>Confirmation to Submitter</h4>
+        <p>Sent instantly. Includes WO#, full details summary, and note that they'll receive status updates.</p>
+      </div>
+      <div class="email-card">
+        <div class="email-trigger">Trigger: Form Submitted</div>
+        <h4>New Submission Alert to JP</h4>
+        <p>Sent instantly. Shows all work order details so you can assign and prioritize without opening the Sheet.</p>
+      </div>
+      <div class="email-card">
+        <div class="email-trigger">Trigger: Status Changed in Sheet</div>
+        <h4>Status Update to Submitter</h4>
+        <p>Fires when you change the Status column (col L) to anything except Completed. Keeps submitters informed automatically.</p>
+      </div>
+      <div class="email-card">
+        <div class="email-trigger">Trigger: Status Changed to Completed</div>
+        <h4>Closure Email to Submitter</h4>
+        <p>Fires when Status is set to "Completed." Includes resolution notes from col O. Green-themed header to distinguish from other emails.</p>
+      </div>
+      <div class="email-card">
+        <div class="email-trigger">Trigger: Every Monday at 7 AM</div>
+        <h4>Weekly Digest to JP</h4>
+        <p>Summary stats (total open, urgent, overdue) + sorted table of all non-completed work orders. Overdue items flagged with ⚠.</p>
+      </div>
+      <div class="email-card">
+        <div class="email-trigger">Trigger: 1st of Month at 7 AM</div>
+        <h4>Monthly Report to JP + Dr. Forgette</h4>
+        <p>Prior month stats: total, completion rate, by campus, by category, average resolution time. Sent to both you and Dr. Forgette automatically.</p>
+      </div>
+    </div>
+
+    <div class="warn" style="margin-top:16px">
+      <strong>Resolution Notes matter:</strong> Before changing status to "Completed," always fill in column O (Resolution Notes) first. Whatever you type there appears in the closure email the submitter receives. A brief note like "Replaced HVAC filter and recharged unit" goes a long way professionally.
+    </div>
+  </div>
+
+
+  <!-- SECTION 9 -->
+  <div class="section" id="s9">
+    <div class="section-title">
+      <div class="section-num">9</div>
+      <h2>Column Reference</h2>
+    </div>
+
+    <table class="col-table">
+      <thead>
+        <tr>
+          <th>Col</th>
+          <th>Field Name</th>
+          <th>Source</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="col-letter">A</td><td>Timestamp</td><td><span class="auto-tag tag-form">Form</span></td><td>Auto-filled by Google Forms on submission</td></tr>
+        <tr><td class="col-letter">B</td><td>Submitter Name</td><td><span class="auto-tag tag-form">Form</span></td><td>—</td></tr>
+        <tr><td class="col-letter">C</td><td>Submitter Email</td><td><span class="auto-tag tag-form">Form</span></td><td>Used for all outgoing emails to submitter</td></tr>
+        <tr><td class="col-letter">D</td><td>Campus</td><td><span class="auto-tag tag-form">Form</span></td><td>WSA Main Campus or Satellite Campus</td></tr>
+        <tr><td class="col-letter">E</td><td>Category</td><td><span class="auto-tag tag-form">Form</span></td><td>—</td></tr>
+        <tr><td class="col-letter">F</td><td>Room / Area</td><td><span class="auto-tag tag-form">Form</span></td><td>—</td></tr>
+        <tr><td class="col-letter">G</td><td>Priority</td><td><span class="auto-tag tag-form">Form</span></td><td>Urgent / High / Normal / Low</td></tr>
+        <tr><td class="col-letter">H</td><td>Description</td><td><span class="auto-tag tag-form">Form</span></td><td>—</td></tr>
+        <tr><td class="col-letter">I</td><td>Photo URL</td><td><span class="auto-tag tag-form">Form</span></td><td>Google Drive link to uploaded photo (if provided)</td></tr>
+        <tr><td class="col-letter">J</td><td>WO #</td><td><span class="auto-tag tag-script">Script</span></td><td>Auto-generated on form submit. Format: WO-YY-001</td></tr>
+        <tr><td class="col-letter">K</td><td>Assigned To</td><td><span class="auto-tag tag-admin">Admin</span></td><td>Dropdown: JP / Custodial Staff / IT Staff / External Vendor</td></tr>
+        <tr><td class="col-letter">L</td><td>Status</td><td><span class="auto-tag tag-admin">Admin</span></td><td><strong>Changing this column triggers emails.</strong> Dropdown: Open / In Progress / On Hold / Completed</td></tr>
+        <tr><td class="col-letter">M</td><td>Est. Completion</td><td><span class="auto-tag tag-admin">Admin</span></td><td>Optional target date — for your reference only</td></tr>
+        <tr><td class="col-letter">N</td><td>Actual Completion</td><td><span class="auto-tag tag-script">Script</span></td><td>Auto-stamped when Status is set to Completed</td></tr>
+        <tr><td class="col-letter">O</td><td>Resolution Notes</td><td><span class="auto-tag tag-admin">Admin</span></td><td><strong>Fill this before marking Completed.</strong> Appears in closure email to submitter.</td></tr>
+        <tr><td class="col-letter">P</td><td>Admin Notes (Private)</td><td><span class="auto-tag tag-private">Private</span></td><td>Never appears in any email. Use for vendor names, quotes, internal context.</td></tr>
+        <tr><td class="col-letter">Q</td><td>Days Open</td><td><span class="auto-tag tag-script">Script</span></td><td>Updated daily (business days only). Cleared when Completed.</td></tr>
+        <tr><td class="col-letter">R</td><td>Overdue Flag</td><td><span class="auto-tag tag-script">Script</span></td><td>Shows "⚠ OVERDUE" in red if open &gt; 5 business days</td></tr>
+        <tr><td class="col-letter">S</td><td>Status Last Updated</td><td><span class="auto-tag tag-script">Script</span></td><td>Timestamp of most recent status change</td></tr>
+        <tr><td class="col-letter">T</td><td>Conf. Sent</td><td><span class="auto-tag tag-script">Script</span></td><td>Confirms confirmation email was delivered on submission</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- SECTION 10 -->
+  <div class="section" id="s10">
+    <div class="section-title">
+      <div class="section-num">10</div>
+      <h2>Daily Operations Guide</h2>
+    </div>
+
+    <div class="card">
+      <h3>When a new work order arrives</h3>
+      <ul>
+        <li>You'll receive a <strong>New Submission Alert</strong> email with all details</li>
+        <li>Open the Sheet → find the new row (it will be white/amber at the bottom)</li>
+        <li>Set <strong>Assigned To</strong> (col K) and <strong>Est. Completion</strong> (col M)</li>
+        <li>Change <strong>Status</strong> to "In Progress" — the submitter is automatically notified</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>When a work order is resolved</h3>
+      <ul>
+        <li>Fill in <strong>Resolution Notes</strong> (col O) first — this appears in the closure email</li>
+        <li>Change <strong>Status</strong> to "Completed" — the script auto-stamps col N and sends the closure email</li>
+        <li>Row will turn green automatically</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Using the On Hold status</h3>
+      <ul>
+        <li>Use "On Hold" when waiting on a vendor, part, or budget approval</li>
+        <li>Row turns red — easy to spot in the Sheet and on the dashboard</li>
+        <li>Add context to <strong>Admin Notes</strong> (col P) explaining why it's on hold</li>
+        <li>The submitter is notified via email that their request is on hold</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Managing the Web App Dashboard</h3>
+      <ul>
+        <li>Data updates on page refresh — no real-time sync needed</li>
+        <li>Share the dashboard URL in your staff communication channels</li>
+        <li>Staff can filter by campus, category, status, priority, and assignee</li>
+        <li>After any script changes, re-deploy to push updates to the dashboard</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <!-- SECTION 11 -->
+  <div class="section" id="s11">
+    <div class="section-title">
+      <div class="section-num">11</div>
+      <h2>Go-Live Checklist</h2>
+    </div>
+
+    <div class="card">
+      <ul class="checklist">
+        <li><div class="check-box"></div>Google Form created with all 8 fields in correct order</li>
+        <li><div class="check-box"></div>Google Sheet created with "Work Orders" tab named correctly</li>
+        <li><div class="check-box"></div>Apps Script pasted and email address updated in CONFIG</li>
+        <li><div class="check-box"></div><code>setupSheet()</code> run — headers, dropdowns, and formatting applied</li>
+        <li><div class="check-box"></div><code>setupTriggers()</code> run — 5 triggers visible in Triggers panel</li>
+        <li><div class="check-box"></div>Form linked to the Google Sheet via Responses tab</li>
+        <li><div class="check-box"></div>Test submission submitted — WO# generated, confirmation email received</li>
+        <li><div class="check-box"></div>Test status change — status update email received by test submitter</li>
+        <li><div class="check-box"></div>Test completed status — closure email received with resolution notes</li>
+        <li><div class="check-box"></div>Web App deployed and URL confirmed working in a browser</li>
+        <li><div class="check-box"></div>QR codes generated, printed, laminated, and posted at both campuses</li>
+        <li><div class="check-box"></div>Web App URL shared with staff via email or Teams/Classroom</li>
+        <li><div class="check-box"></div>Dr. Forgette's email confirmed correct for monthly reports</li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<div class="page-footer">
+  <strong>WSA Work Order Management System v1.0</strong><br>
+  Wayne STEM Academy &mdash; Operations Department &mdash; Confidential Internal Document
+</div>
+
+</body>
+</html>

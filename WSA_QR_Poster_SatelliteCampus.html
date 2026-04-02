@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>WSA Work Order QR Poster — Main Campus</title>
+<style>
+  @media print {
+    body { margin: 0; }
+    .print-note { display: none; }
+    .poster { box-shadow: none !important; }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: Arial, sans-serif;
+    background: #E8E6F0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 24px 16px;
+  }
+
+  /* Print note bar */
+  .print-note {
+    background: #271A70;
+    color: #BFA95F;
+    font-size: 13px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    text-align: center;
+    max-width: 680px;
+    width: 100%;
+  }
+  .print-note strong { color: #fff; }
+  .print-btn {
+    background: #BFA95F;
+    color: #271A70;
+    border: none;
+    padding: 6px 18px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-left: 12px;
+  }
+
+  /* Poster — 8.5 x 11 inch proportion */
+  .poster {
+    width: 680px;
+    min-height: 880px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.18);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Top bar */
+  .top-bar {
+    background: #271A70;
+    padding: 28px 40px 24px;
+    text-align: center;
+  }
+  .school-name {
+    color: #BFA95F;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .headline {
+    color: #fff;
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 6px;
+  }
+  .subheadline {
+    color: #98A2AD;
+    font-size: 15px;
+  }
+
+  /* Campus badge */
+  .campus-badge {
+    background: #BFA95F;
+    color: #271A70;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 8px 0;
+    text-align: center;
+  }
+
+  /* QR section */
+  .qr-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 36px 40px 28px;
+    background: #fff;
+  }
+  .scan-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #98A2AD;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .qr-frame {
+    border: 5px solid #271A70;
+    border-radius: 12px;
+    padding: 16px;
+    background: #fff;
+    margin-bottom: 20px;
+  }
+  #qr-sat canvas, #qr-sat img { display: block; }
+  .url-display {
+    font-size: 12px;
+    color: #98A2AD;
+    margin-top: 6px;
+    text-align: center;
+    word-break: break-all;
+  }
+
+  /* How it works */
+  .how-section {
+    background: #F8F8FC;
+    border-top: 3px solid #BFA95F;
+    padding: 24px 40px;
+  }
+  .how-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #271A70;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+  .steps {
+    display: flex;
+    gap: 0;
+    justify-content: center;
+  }
+  .step-item {
+    flex: 1;
+    text-align: center;
+    padding: 0 10px;
+    position: relative;
+  }
+  .step-item:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    right: -6px;
+    top: 10px;
+    color: #BFA95F;
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .step-circle {
+    width: 36px;
+    height: 36px;
+    background: #271A70;
+    color: #BFA95F;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 auto 8px;
+  }
+  .step-text {
+    font-size: 12px;
+    color: #444;
+    line-height: 1.4;
+  }
+  .step-text strong { color: #271A70; display: block; margin-bottom: 2px; font-size: 12px; }
+
+  /* Bottom bar */
+  .bottom-bar {
+    background: #271A70;
+    padding: 16px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .bottom-bar p {
+    color: #98A2AD;
+    font-size: 11px;
+    line-height: 1.6;
+  }
+  .bottom-bar strong { color: #BFA95F; }
+  .ops-tag {
+    background: #BFA95F;
+    color: #271A70;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+<div class="print-note">
+  <strong>Print instructions:</strong> Open your browser's Print dialog (Ctrl+P / Cmd+P) → Set paper size to Letter → Scale to "Fit to page" → Print.
+  <button class="print-btn" onclick="window.print()">Print Now</button>
+</div>
+
+<div class="poster">
+
+  <div class="top-bar">
+    <div class="school-name">Wayne STEM Academy</div>
+    <div class="headline">Submit a<br>Work Order</div>
+    <div class="subheadline">Report facilities, maintenance &amp; IT issues</div>
+  </div>
+
+  <div class="campus-badge">Satellite Campus</div>
+
+  <div class="qr-section">
+    <div class="scan-label">Scan to Submit</div>
+    <div class="qr-frame">
+      <div id="qr-sat"></div>
+    </div>
+    <div class="url-display">forms.gle/oCCR2a6hJgvpBkRr9</div>
+  </div>
+
+  <div class="how-section">
+    <div class="how-title">How it works</div>
+    <div class="steps">
+      <div class="step-item">
+        <div class="step-circle">1</div>
+        <div class="step-text"><strong>Scan</strong>Use your phone camera or QR app</div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle">2</div>
+        <div class="step-text"><strong>Fill out</strong>Takes under 2 minutes</div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle">3</div>
+        <div class="step-text"><strong>Done</strong>You'll get an email confirmation</div>
+      </div>
+      <div class="step-item">
+        <div class="step-circle">4</div>
+        <div class="step-text"><strong>Tracked</strong>We'll update you every step</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-bar">
+    <p><strong>Questions?</strong><br>Contact the Operations Office directly</p>
+    <div class="ops-tag">Operations &amp; Leadership</div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+<script>
+  QRCode.toCanvas(
+    document.createElement('canvas'),
+    'https://forms.gle/oCCR2a6hJgvpBkRr9',
+    {
+      width: 260,
+      margin: 1,
+      color: { dark: '#271A70', light: '#ffffff' }
+    },
+    function(err, canvas) {
+      if (err) {
+        // Fallback: show URL as text if QR fails
+        document.getElementById('qr-sat').innerHTML =
+          '<div style="width:260px;height:260px;display:flex;align-items:center;justify-content:center;background:#F0EDF8;border-radius:6px;font-size:12px;color:#271A70;text-align:center;padding:20px">Open browser to generate QR code<br><br>forms.gle/oCCR2a6hJgvpBkRr9</div>';
+        return;
+      }
+      document.getElementById('qr-sat').appendChild(canvas);
+    }
+  );
+</script>
+</body>
+</html>

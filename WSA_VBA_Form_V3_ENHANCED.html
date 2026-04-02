@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WSA Values-Based Appraisal</title>
+    <style>
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 32px;
+        }
+        
+        .header p {
+            margin: 5px 0;
+            font-size: 16px;
+            opacity: 0.95;
+        }
+        
+        /* AUTO-SAVE INDICATOR */
+        .autosave-indicator {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-size: 13px;
+            color: #666;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .autosave-indicator.saving {
+            display: block;
+            background: #fff3cd;
+            color: #997404;
+        }
+        
+        .autosave-indicator.saved {
+            display: block;
+            background: #d1e7dd;
+            color: #0a3622;
+        }
+        
+        /* DRAFT RESUME BANNER */
+        .draft-banner {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: none;
+        }
+        
+        .draft-banner h3 {
+            margin: 0 0 10px 0;
+            color: #997404;
+        }
+        
+        .draft-banner button {
+            background: #ffc107;
+            color: #997404;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        
+        .draft-banner button:hover {
+            background: #e0a800;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .info-field label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        .required {
+            color: #dc3545;
+        }
+        
+        .info-field input,
+        .info-field select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .info-field input:focus,
+        .info-field select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .criterion-section {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .criterion-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: -25px -25px 20px -25px;
+            position: relative;
+        }
+        
+        .criterion-header h3 {
+            margin: 0 0 5px 0;
+            font-size: 20px;
+            display: inline-block;
+        }
+        
+        /* TOOLTIP ICON */
+        .help-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            margin-left: 8px;
+            cursor: help;
+            font-size: 14px;
+            position: relative;
+        }
+        
+        .help-icon:hover {
+            background: rgba(255,255,255,0.5);
+        }
+        
+        /* TOOLTIP */
+        .tooltip {
+            visibility: hidden;
+            position: absolute;
+            z-index: 100;
+            background: #333;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+            width: 350px;
+            top: 35px;
+            left: 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .help-icon:hover .tooltip {
+            visibility: visible;
+        }
+        
+        .tooltip::before {
+            content: "";
+            position: absolute;
+            top: -8px;
+            left: 20px;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid #333;
+        }
+        
+        .tooltip-example {
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 8px;
+            font-style: italic;
+        }
+        
+        .criterion-motto {
+            font-size: 14px;
+            font-style: italic;
+            margin: 5px 0;
+            opacity: 0.95;
+        }
+        
+        .criterion-definition {
+            font-size: 13px;
+            margin: 8px 0 0 0;
+            opacity: 0.90;
+            line-height: 1.5;
+        }
+        
+        .rubric-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .rubric-column {
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            border: 2px solid;
+            transition: all 0.3s;
+        }
+        
+        .rubric-column.developing {
+            background: #fff9e6;
+            border-color: #ffc107;
+        }
+        
+        .rubric-column.proficient {
+            background: #e7f1ff;
+            border-color: #0d6efd;
+        }
+        
+        .rubric-column.exemplary {
+            background: #e8f5e9;
+            border-color: #198754;
+        }
+        
+        .rubric-column.highlighted {
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.5);
+            transform: scale(1.02);
+        }
+        
+        .rubric-column h4 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+        }
+        
+        .rubric-column.developing h4 { color: #997404; }
+        .rubric-column.proficient h4 { color: #084298; }
+        .rubric-column.exemplary h4 { color: #0a3622; }
+        
+        .rubric-column ul {
+            margin: 0;
+            padding-left: 18px;
+            line-height: 1.6;
+        }
+        
+        .rating-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .slider-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        input[type="range"] {
+            flex: 1;
+            height: 8px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #ffc107 0%, #ffc107 33%, #0d6efd 33%, #0d6efd 66%, #198754 66%, #198754 100%);
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: 3px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        .rating-value {
+            font-size: 20px;
+            font-weight: 700;
+            min-width: 30px;
+            text-align: center;
+            color: #667eea;
+        }
+        
+        .priority-checks {
+            display: flex;
+            gap: 20px;
+            margin: 15px 0;
+        }
+        
+        .priority-check {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .priority-check input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .final-section {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        
+        .final-section h3 {
+            color: #667eea;
+            margin: 0 0 20px 0;
+        }
+        
+        .goals-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        .goal-field {
+            margin-bottom: 20px;
+        }
+        
+        .goal-field label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* PRE-FLIGHT MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 50px auto;
+            padding: 40px;
+            border-radius: 12px;
+            max-width: 700px;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: -40px -40px 25px -40px;
+        }
+        
+        .modal-header h2 {
+            margin: 0;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .summary-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .summary-label {
+            font-weight: 600;
+            color: #667eea;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+        
+        .summary-value {
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .stat-box {
+            text-align: center;
+            padding: 15px;
+            border-radius: 8px;
+            background: white;
+            border: 2px solid #e0e0e0;
+        }
+        
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+        
+        /* MOBILE RESPONSIVE */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .info-grid,
+            .rubric-grid,
+            .goals-grid,
+            .summary-grid,
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .criterion-header {
+                margin: -25px -25px 15px -25px;
+                padding: 15px;
+            }
+            
+            .tooltip {
+                width: 280px;
+                left: -100px;
+            }
+            
+            .priority-check input[type="checkbox"] {
+                width: 24px;
+                height: 24px;
+            }
+            
+            .rating-control {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .slider-container {
+                width: 100%;
+            }
+            
+            input[type="range"] {
+                width: 100%;
+            }
+            
+            .autosave-indicator {
+                top: 10px;
+                right: 10px;
+                font-size: 11px;
+                padding: 8px 12px;
+            }
+            
+            .modal-content {
+                margin: 20px;
+                padding: 25px;
+            }
+            
+            .modal-header {
+                margin: -25px -25px 20px -25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- AUTO-SAVE INDICATOR -->
+        <div class="autosave-indicator" id="autosaveIndicator">
+            💾 Draft saved
+        </div>
+        
+        <!-- DRAFT RESUME BANNER -->
+        <div class="draft-banner" id="draftBanner">
+            <h3>📝 Draft Found</h3>
+            <p>You have an unsaved draft from <span id="draftDate"></span>. Would you like to resume?</p>
+            <button onclick="resumeDraft()">Resume Draft</button>
+            <button onclick="clearDraft()" style="background: #6c757d; color: white;">Start Fresh</button>
+        </div>
+        
+        <div class="header">
+            <h1>Values-Based Appraisal</h1>
+            <p>Wayne STEM Academy</p>
+            <p>Growing Leaders Through Values & Excellence</p>
+        </div>
+
+        <form id="appraisalForm">
+            <!-- Basic Information -->
+            <div class="info-grid">
+                <div class="info-field">
+                    <label>Staff Member Name <span class="required">*</span></label>
+                    <input type="text" id="staffName" required>
+                </div>
+                <div class="info-field">
+                    <label>Evaluation Date <span class="required">*</span></label>
+                    <input type="date" id="evaluationDate" required>
+                </div>
+                <div class="info-field">
+                    <label>Evaluation Period <span class="required">*</span></label>
+                    <select id="semester" required>
+                        <option value="">Select...</option>
+                        <option value="Mid-Year">Mid-Year</option>
+                        <option value="End-of-Year">End-of-Year</option>
+                        <option value="Quarterly - Q1">Quarterly - Q1</option>
+                        <option value="Quarterly - Q2">Quarterly - Q2</option>
+                        <option value="Quarterly - Q3">Quarterly - Q3</option>
+                        <option value="Quarterly - Q4">Quarterly - Q4</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Criteria Sections will be generated here -->
+            <div id="criteriaContainer"></div>
+
+            <!-- Quick Wins & Reflection -->
+            <div class="final-section">
+                <h3>🚀 Quick Wins - Next 30 Days</h3>
+                <div class="goal-field">
+                    <label>Based on this evaluation, what are 2-3 specific actions that would be impactful to take in the next 30 days? <span class="required">*</span></label>
+                    <textarea id="quickWins" required placeholder="Example: Shadow a colleague during their most challenging class period; Attend the upcoming data analysis workshop; Practice one new active listening technique per week..."></textarea>
+                </div>
+                
+                <h3 style="margin-top: 30px;">💭 Reflection & Goals</h3>
+                <div class="goals-grid">
+                    <div class="goal-field">
+                        <label>What I'm Most Proud Of: <span class="required">*</span></label>
+                        <textarea id="proudOf" required placeholder="Share specific accomplishments or moments of growth..."></textarea>
+                    </div>
+                    <div class="goal-field">
+                        <label>Where I Want to Grow: <span class="required">*</span></label>
+                        <textarea id="wantToGrow" required placeholder="Identify 1-2 specific areas for development..."></textarea>
+                    </div>
+                    <div class="goal-field">
+                        <label>Support I Need: <span class="required">*</span></label>
+                        <textarea id="supportNeeded" required placeholder="What resources, training, or coaching would help you succeed?"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button type="submit" class="submit-btn" id="submitBtn">📧 Submit Appraisal</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- PRE-FLIGHT REVIEW MODAL -->
+    <div id="reviewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📋 Review Your Appraisal</h2>
+            </div>
+            
+            <div class="summary-grid">
+                <div class="summary-item">
+                    <div class="summary-label">Staff Member</div>
+                    <div class="summary-value" id="review-staffName"></div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Evaluation Date</div>
+                    <div class="summary-value" id="review-evaluationDate"></div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Period</div>
+                    <div class="summary-value" id="review-semester"></div>
+                </div>
+            </div>
+            
+            <h3 style="color: #667eea; margin-top: 25px;">Performance Summary</h3>
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="stat-number" id="review-totalScore">0</div>
+                    <div class="stat-label">Total Score</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="review-developing">0</div>
+                    <div class="stat-label">Needs Development</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="review-proficient">0</div>
+                    <div class="stat-label">Meets Expectations</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number" id="review-exemplary">0</div>
+                    <div class="stat-label">Exceeds Expectations</div>
+                </div>
+            </div>
+            
+            <div class="summary-grid" style="margin-top: 20px;">
+                <div class="summary-item">
+                    <div class="summary-label">Key Strengths Identified</div>
+                    <div class="summary-value" id="review-strengths">0</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Growth Areas Identified</div>
+                    <div class="summary-value" id="review-growth">0</div>
+                </div>
+            </div>
+            
+            <div style="background: #fff9e6; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107; margin-top: 20px;">
+                <strong>⚠️ Before submitting, please verify:</strong>
+                <ul style="margin: 10px 0 0 20px; line-height: 1.8;">
+                    <li>All comments include specific examples</li>
+                    <li>Ratings accurately reflect performance</li>
+                    <li>Quick Wins are achievable in 30 days</li>
+                    <li>Reflection sections are complete</li>
+                </ul>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeReviewModal()">⬅️ Go Back to Edit</button>
+                <button class="btn-primary" onclick="confirmSubmission()">✅ Confirm & Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // PRE-CONFIGURED WEB APP URL
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZVX7VbsUW3ADLf_NI6laaPoKDlVrZW70wOM6tK1vS_fAcHwBTPcCdPV-W9_J7kcxsWw/exec';
+        
+        // The 10 WSA Values with definitions and example tooltips
+        const criteria = [
+            { 
+                id: "ownership", 
+                title: "Ownership & Initiative", 
+                motto: "You don't wait to be asked. You just handle it.",
+                definition: "Taking personal responsibility for outcomes and proactively addressing needs without being prompted or assigned.",
+                example: "During Fall conferences, Sarah noticed Spanish-speaking families struggling to understand the math curriculum. Without being asked, she created translated materials and offered to attend conferences as an interpreter."
+            },
+            { 
+                id: "solutionOriented", 
+                title: "Solution-Oriented", 
+                motto: "You stay out of drama and focus on solutions.",
+                definition: "Maintaining a constructive mindset that focuses on finding and implementing solutions rather than dwelling on problems or assessing blame.",
+                example: "When three students struggled with reading fluency, Tom researched evidence-based interventions, piloted two strategies, and within 6 weeks all three students showed measurable progress on benchmark assessments."
+            },
+            { 
+                id: "resourcefulness", 
+                title: "Resourcefulness", 
+                motto: "You fix what is broken instead of complaining about it.",
+                definition: "The ability to find creative solutions and make the most of available resources, overcoming obstacles with ingenuity.",
+                example: "When the SMART Board stopped working mid-lesson, Maria seamlessly shifted to using chart paper and manipulatives, maintaining student engagement without missing a beat in instruction."
+            },
+            { 
+                id: "growthMindset", 
+                title: "Growth Mindset", 
+                motto: "You admit what you don't know, then learn fast.",
+                definition: "The belief that abilities, intelligence, and talents can be developed through dedication, hard work, and perseverance, viewing challenges as opportunities to learn rather than fixed limitations.",
+                example: "After receiving feedback about classroom management, Alex attended a workshop, observed a mentor teacher, implemented three new strategies, and saw significant improvement in student behavior within one month."
+            },
+            { 
+                id: "actionOriented", 
+                title: "Action-Oriented", 
+                motto: "You turn ideas into action instead of just talking.",
+                definition: "The drive to move from planning to execution quickly and effectively, translating concepts and discussions into concrete results.",
+                example: "At Monday's PLC meeting, the team discussed differentiation strategies. By Wednesday, Jamie had created three leveled centers and was piloting them with students, sharing results with the team by Friday."
+            },
+            { 
+                id: "activeListening", 
+                title: "Active Listening", 
+                motto: "You listen with empathy - really listen.",
+                definition: "A conscious communication skill where you give full, undivided attention to a speaker, focusing on understanding their verbal message and non-verbal cues, rather than just waiting to reply, to build empathy and clear understanding.",
+                example: "During a difficult parent conference, Chris put away all distractions, made eye contact, paraphrased the parent's concerns, and asked clarifying questions until the parent felt fully heard and understood."
+            },
+            { 
+                id: "strategicThinking", 
+                title: "Strategic Thinking", 
+                motto: "You spot trends that others overlook.",
+                definition: "The ability to see patterns, anticipate future needs, connect daily work to long-term goals, and make decisions that align with broader organizational vision.",
+                example: "By analyzing September assessment data, Jordan noticed that 60% of students struggled with word problems. She proactively built problem-solving strategies into daily math instruction, preventing the typical mid-year dip in math scores."
+            },
+            { 
+                id: "emotionalIntelligence", 
+                title: "Emotional Intelligence", 
+                motto: "You handle tough situations with emotional character.",
+                definition: "The ability to recognize, understand, and manage your own emotions, as well as perceive, understand, and influence the emotions of others, helping you navigate social situations, build relationships, and handle challenges effectively.",
+                example: "When a student had an emotional outburst during reading, Taylor remained calm, validated the student's feelings, gave them space to regulate, and later had a private conversation that helped the student develop coping strategies."
+            },
+            { 
+                id: "persistence", 
+                title: "Persistence", 
+                motto: "You finish what you start.",
+                definition: "The quality of continuing steadily despite difficulties, obstacles, or discouragement, maintaining commitment to goals and seeing initiatives through to completion.",
+                example: "Despite slow initial progress with a struggling reader, Morgan continued trying different interventions, met with the student daily for 10 weeks, and celebrated when the student finally reached grade-level benchmarks."
+            },
+            { 
+                id: "supportive", 
+                title: "Supportive", 
+                motto: "You make everyone's job easier, not harder.",
+                definition: "Actively providing encouragement, resources, and assistance that helps others succeed, fostering a collaborative environment where everyone thrives.",
+                example: "When a new teacher joined mid-year, Pat proactively shared lesson plans, offered to co-plan weekly, invited them to observe her classroom, and checked in daily to see how they could help with the transition."
+            }
+        ];
+
+        // Elementary school-specific rubrics
+        const rubrics = {
+            ownership: { 
+                needs: ["Rarely takes initiative with classroom needs or student issues", "Waits to be told what to do, even for routine tasks", "Requires frequent reminders for basic responsibilities"],
+                meets: ["Completes assigned duties and responds when students need help", "Takes care of classroom routines consistently", "Occasionally anticipates needs before being asked"],
+                exceeds: ["Proactively addresses student learning gaps before they become problems", "Independently creates solutions for classroom challenges", "Takes ownership of school-wide initiatives and student success"]
+            },
+            solutionOriented: {
+                needs: ["Complains about student behavior without trying strategies", "Focuses on problems rather than solutions during team meetings", "Gets involved in or spreads negative talk about students, families, or colleagues"],
+                meets: ["Tries different approaches when students struggle", "Generally maintains positive attitude about challenges", "Focuses on what can be done to help students succeed"],
+                exceeds: ["Identifies root causes of student struggles and addresses them creatively", "Helps colleagues brainstorm solutions during grade-level meetings", "Stays focused on solutions even with difficult students or parents"]
+            },
+            resourcefulness: {
+                needs: ["Complains about lack of classroom materials or support", "Gives up when preferred resources aren't available", "Wastes instructional time or classroom supplies"],
+                meets: ["Uses available materials and resources effectively", "Adapts lessons when technology or materials aren't working", "Generally mindful of supply usage and classroom time"],
+                exceeds: ["Creates engaging lessons with minimal materials", "Finds creative alternatives when resources are limited", "Maximizes learning time even during transitions or disruptions"]
+            },
+            growthMindset: {
+                needs: ["Resistant to trying new teaching strategies or curriculum", "Defensive when receiving feedback about instruction", "Views struggling students as unable to improve"],
+                meets: ["Participates in professional development and grade-level planning", "Generally open to feedback about teaching practice", "Willing to try new approaches with students"],
+                exceeds: ["Actively seeks out professional learning opportunities", "Implements feedback and adjusts teaching based on student data", "Models growth mindset language and believes all students can learn"]
+            },
+            actionOriented: {
+                needs: ["Plans lessons but doesn't follow through on implementation", "Struggles to meet instructional deadlines or complete report cards on time", "Procrastinates on responding to parent emails or student needs"],
+                meets: ["Completes lesson plans and grading within expected timeframes", "Generally follows through on commitments to students and families", "Maintains steady, consistent instructional pace"],
+                exceeds: ["Implements new strategies immediately after learning them", "Completes tasks ahead of deadlines and offers to help others", "Turns professional development ideas into classroom action quickly"]
+            },
+            activeListening: {
+                needs: ["Frequently interrupts students or colleagues during conversations", "Misses important information shared by students, parents, or team members", "Makes students or parents feel unheard or dismissed"],
+                meets: ["Gives students appropriate attention when they're speaking", "Listens during staff meetings and can summarize key points", "Responds thoughtfully to parent concerns"],
+                exceeds: ["Creates a safe space where all students feel heard and valued", "Picks up on subtle cues from struggling students", "Asks clarifying questions that deepen understanding in meetings and with families"]
+            },
+            strategicThinking: {
+                needs: ["Focuses only on today's lesson without considering learning progressions", "Misses obvious patterns in student data or behavior", "Doesn't connect daily instruction to year-long learning goals"],
+                meets: ["Understands how lessons build toward grade-level standards", "Notices some trends in student achievement data", "Plans units with end goals in mind"],
+                exceeds: ["Identifies patterns in student data and adjusts instruction proactively", "Plans backward from year-end goals to daily lessons", "Anticipates learning gaps and addresses them before assessments"]
+            },
+            emotionalIntelligence: {
+                needs: ["Loses composure frequently with students or during conflicts", "Escalates situations with upset students or frustrated parents", "Unaware of how their mood affects classroom climate"],
+                meets: ["Generally maintains calm demeanor with students", "Recognizes when students are upset and responds appropriately", "Attempts to de-escalate tense situations with parents or colleagues"],
+                exceeds: ["Stays calm and professional in all situations, even with challenging behaviors", "Reads student emotions accurately and adjusts teaching approach", "Creates emotionally safe classroom where students feel secure"]
+            },
+            persistence: {
+                needs: ["Gives up on struggling students or challenging behaviors", "Abandons new teaching strategies after one attempt", "Easily discouraged when lessons don't go well"],
+                meets: ["Continues working with all students even when progress is slow", "Tries new strategies multiple times before changing approach", "Maintains effort through difficult teaching days"],
+                exceeds: ["Shows unwavering commitment to every student's growth", "Persists with challenging students and finds what works", "Views setbacks as learning opportunities and adjusts accordingly"]
+            },
+            supportive: {
+                needs: ["'Not my student' or 'not my job' attitude with colleagues", "Hoards good teaching resources or lesson ideas", "Avoids helping with school-wide duties or covering for absent teachers"],
+                meets: ["Helps colleagues when asked directly", "Shares materials and ideas during grade-level meetings", "Participates in required school events and duties"],
+                exceeds: ["Proactively offers to help struggling colleagues or new teachers", "Shares best practices and resources freely", "Steps up to support students outside their classroom and school needs"]
+            }
+        };
+
+        const ratings = {};
+        const strengths = new Set();
+        const growthAreas = new Set();
+        let isSubmitting = false;
+        let autosaveTimer = null;
+        let confirmedSubmission = false;
+
+        // AUTO-SAVE FUNCTIONS
+        function startAutoSave() {
+            autosaveTimer = setInterval(() => {
+                saveDraft();
+            }, 30000); // Every 30 seconds
+        }
+
+        function saveDraft() {
+            const formData = collectFormData();
+            formData.draftTimestamp = new Date().toISOString();
+            
+            try {
+                localStorage.setItem('vbaFormDraft', JSON.stringify(formData));
+                showAutosaveIndicator('saved');
+            } catch (e) {
+                console.error('Failed to save draft:', e);
+            }
+        }
+
+        function showAutosaveIndicator(type) {
+            const indicator = document.getElementById('autosaveIndicator');
+            indicator.className = 'autosave-indicator ' + type;
+            indicator.textContent = type === 'saving' ? '💾 Saving draft...' : '💾 Draft saved at ' + new Date().toLocaleTimeString();
+            
+            setTimeout(() => {
+                indicator.style.display = 'none';
+            }, 3000);
+        }
+
+        function checkForDraft() {
+            const draft = localStorage.getItem('vbaFormDraft');
+            if (draft) {
+                try {
+                    const data = JSON.parse(draft);
+                    const draftDate = new Date(data.draftTimestamp);
+                    document.getElementById('draftDate').textContent = draftDate.toLocaleString();
+                    document.getElementById('draftBanner').style.display = 'block';
+                } catch (e) {
+                    console.error('Invalid draft data:', e);
+                    localStorage.removeItem('vbaFormDraft');
+                }
+            }
+        }
+
+        function resumeDraft() {
+            const draft = localStorage.getItem('vbaFormDraft');
+            if (draft) {
+                try {
+                    const data = JSON.parse(draft);
+                    populateFormFromDraft(data);
+                    document.getElementById('draftBanner').style.display = 'none';
+                } catch (e) {
+                    console.error('Failed to resume draft:', e);
+                }
+            }
+        }
+
+        function clearDraft() {
+            localStorage.removeItem('vbaFormDraft');
+            document.getElementById('draftBanner').style.display = 'none';
+        }
+
+        function populateFormFromDraft(data) {
+            // Populate basic fields
+            if (data.staffName) document.getElementById('staffName').value = data.staffName;
+            if (data.evaluationDate) document.getElementById('evaluationDate').value = data.evaluationDate;
+            if (data.semester) document.getElementById('semester').value = data.semester;
+            if (data.quickWins) document.getElementById('quickWins').value = data.quickWins;
+            if (data.proudOf) document.getElementById('proudOf').value = data.proudOf;
+            if (data.wantToGrow) document.getElementById('wantToGrow').value = data.wantToGrow;
+            if (data.supportNeeded) document.getElementById('supportNeeded').value = data.supportNeeded;
+            
+            // Populate criteria data
+            if (data.criteriaData) {
+                data.criteriaData.forEach((criterion, index) => {
+                    const criterionId = criteria[index].id;
+                    const slider = document.getElementById(`rating-${criterionId}`);
+                    const comments = document.getElementById(`comments-${criterionId}`);
+                    const strengthCheck = document.getElementById(`strength-${criterionId}`);
+                    const growthCheck = document.getElementById(`growth-${criterionId}`);
+                    
+                    if (slider && criterion.rating) {
+                        slider.value = criterion.rating;
+                        ratings[criterionId] = parseInt(criterion.rating);
+                        document.getElementById(`value-${criterionId}`).textContent = criterion.rating;
+                        highlightRubric(criterionId, criterion.rating);
+                    }
+                    if (comments && criterion.comments) comments.value = criterion.comments;
+                    if (strengthCheck && criterion.isStrength) {
+                        strengthCheck.checked = true;
+                        strengths.add(criterionId);
+                    }
+                    if (growthCheck && criterion.isGrowthArea) {
+                        growthCheck.checked = true;
+                        growthAreas.add(criterionId);
+                    }
+                });
+            }
+        }
+
+        function collectFormData() {
+            return {
+                staffName: document.getElementById('staffName').value,
+                evaluationDate: document.getElementById('evaluationDate').value,
+                semester: document.getElementById('semester').value,
+                quickWins: document.getElementById('quickWins').value,
+                proudOf: document.getElementById('proudOf').value,
+                wantToGrow: document.getElementById('wantToGrow').value,
+                supportNeeded: document.getElementById('supportNeeded').value,
+                criteriaData: criteria.map(c => ({
+                    criterion: c.title,
+                    rating: ratings[c.id],
+                    comments: document.getElementById(`comments-${c.id}`).value,
+                    isStrength: strengths.has(c.id),
+                    isGrowthArea: growthAreas.has(c.id)
+                }))
+            };
+        }
+
+        // PRE-FLIGHT REVIEW FUNCTIONS
+        function showReviewModal() {
+            // Calculate stats
+            let total = 0, developing = 0, proficient = 0, exemplary = 0;
+            criteria.forEach(c => {
+                const r = ratings[c.id];
+                total += r;
+                if (r <= 3) developing++;
+                else if (r <= 6) proficient++;
+                else exemplary++;
+            });
+            
+            // Populate review modal
+            document.getElementById('review-staffName').textContent = document.getElementById('staffName').value;
+            document.getElementById('review-evaluationDate').textContent = document.getElementById('evaluationDate').value;
+            document.getElementById('review-semester').textContent = document.getElementById('semester').value;
+            document.getElementById('review-totalScore').textContent = total;
+            document.getElementById('review-developing').textContent = developing;
+            document.getElementById('review-proficient').textContent = proficient;
+            document.getElementById('review-exemplary').textContent = exemplary;
+            document.getElementById('review-strengths').textContent = strengths.size;
+            document.getElementById('review-growth').textContent = growthAreas.size;
+            
+            // Show modal
+            document.getElementById('reviewModal').style.display = 'block';
+        }
+
+        function closeReviewModal() {
+            document.getElementById('reviewModal').style.display = 'none';
+        }
+
+        function confirmSubmission() {
+            confirmedSubmission = true;
+            closeReviewModal();
+            // Trigger actual form submission
+            document.getElementById('appraisalForm').dispatchEvent(new Event('submit'));
+        }
+
+        // Generate criterion sections
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('criteriaContainer');
+            
+            criteria.forEach(criterion => {
+                const rubric = rubrics[criterion.id];
+                
+                const section = document.createElement('div');
+                section.className = 'criterion-section';
+                section.id = `section-${criterion.id}`;
+                section.innerHTML = `
+                    <div class="criterion-header">
+                        <h3>
+                            ${criterion.title}
+                            <span class="help-icon">ⓘ
+                                <span class="tooltip">
+                                    <strong>Example of a Good Comment:</strong>
+                                    <div class="tooltip-example">${criterion.example}</div>
+                                </span>
+                            </span>
+                        </h3>
+                        <p class="criterion-motto">"${criterion.motto}"</p>
+                        <p class="criterion-definition">${criterion.definition}</p>
+                    </div>
+                    
+                    <div class="rubric-grid" id="rubric-${criterion.id}">
+                        <div class="rubric-column developing">
+                            <h4>Needs Development (1-3)</h4>
+                            <ul>${rubric.needs.map(item => `<li>${item}</li>`).join('')}</ul>
+                        </div>
+                        <div class="rubric-column proficient">
+                            <h4>Meets Expectations (4-6)</h4>
+                            <ul>${rubric.meets.map(item => `<li>${item}</li>`).join('')}</ul>
+                        </div>
+                        <div class="rubric-column exemplary">
+                            <h4>Exceeds Expectations (7-9)</h4>
+                            <ul>${rubric.exceeds.map(item => `<li>${item}</li>`).join('')}</ul>
+                        </div>
+                    </div>
+                    
+                    <div class="rating-control">
+                        <label>Rating: <span class="required">*</span></label>
+                        <div class="slider-container">
+                            <input type="range" id="rating-${criterion.id}" min="1" max="9" value="5" required>
+                            <span class="rating-value" id="value-${criterion.id}">5</span>
+                        </div>
+                    </div>
+                    
+                    <div class="priority-checks">
+                        <div class="priority-check">
+                            <input type="checkbox" id="strength-${criterion.id}">
+                            <label for="strength-${criterion.id}">✅ Key Strength</label>
+                        </div>
+                        <div class="priority-check">
+                            <input type="checkbox" id="growth-${criterion.id}">
+                            <label for="growth-${criterion.id}">🎯 Growth Area</label>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="comments-${criterion.id}">Specific Examples & Comments: <span class="required">*</span></label>
+                        <textarea id="comments-${criterion.id}" required placeholder="Provide specific examples with dates, names, or observable behaviors..."></textarea>
+                    </div>
+                `;
+                
+                container.appendChild(section);
+                
+                // Initialize rating
+                ratings[criterion.id] = 5;
+                
+                // Add event listeners
+                const slider = document.getElementById(`rating-${criterion.id}`);
+                slider.addEventListener('input', function() {
+                    const value = parseInt(this.value);
+                    ratings[criterion.id] = value;
+                    document.getElementById(`value-${criterion.id}`).textContent = value;
+                    highlightRubric(criterion.id, value);
+                    saveDraft(); // Auto-save on change
+                });
+                
+                const strengthCheck = document.getElementById(`strength-${criterion.id}`);
+                strengthCheck.addEventListener('change', function() {
+                    if (this.checked) {
+                        strengths.add(criterion.id);
+                        document.getElementById(`growth-${criterion.id}`).checked = false;
+                        growthAreas.delete(criterion.id);
+                    } else {
+                        strengths.delete(criterion.id);
+                    }
+                    saveDraft();
+                });
+                
+                const growthCheck = document.getElementById(`growth-${criterion.id}`);
+                growthCheck.addEventListener('change', function() {
+                    if (this.checked) {
+                        growthAreas.add(criterion.id);
+                        document.getElementById(`strength-${criterion.id}`).checked = false;
+                        strengths.delete(criterion.id);
+                    } else {
+                        growthAreas.delete(criterion.id);
+                    }
+                    saveDraft();
+                });
+                
+                // Auto-save on comment changes
+                const commentsField = document.getElementById(`comments-${criterion.id}`);
+                commentsField.addEventListener('blur', () => saveDraft());
+                
+                // Initial highlight
+                highlightRubric(criterion.id, 5);
+            });
+            
+            // Set today's date
+            document.getElementById('evaluationDate').valueAsDate = new Date();
+            
+            // Check for existing draft
+            checkForDraft();
+            
+            // Start auto-save timer
+            startAutoSave();
+            
+            // Auto-save on basic field changes
+            ['staffName', 'evaluationDate', 'semester', 'quickWins', 'proudOf', 'wantToGrow', 'supportNeeded'].forEach(id => {
+                const field = document.getElementById(id);
+                if (field) {
+                    field.addEventListener('blur', () => saveDraft());
+                }
+            });
+        });
+
+        function highlightRubric(criterionId, value) {
+            const columns = document.querySelectorAll(`#rubric-${criterionId} .rubric-column`);
+            columns.forEach(col => col.classList.remove('highlighted'));
+            
+            let target;
+            if (value >= 1 && value <= 3) target = document.querySelector(`#rubric-${criterionId} .developing`);
+            else if (value >= 4 && value <= 6) target = document.querySelector(`#rubric-${criterionId} .proficient`);
+            else if (value >= 7 && value <= 9) target = document.querySelector(`#rubric-${criterionId} .exemplary`);
+            
+            if (target) target.classList.add('highlighted');
+        }
+
+        // Form submission with pre-flight check
+        document.getElementById('appraisalForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // If not confirmed yet, show review modal
+            if (!confirmedSubmission) {
+                showReviewModal();
+                return;
+            }
+            
+            if (isSubmitting) {
+                alert('Submission in progress...');
+                return;
+            }
+            
+            isSubmitting = true;
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Submitting...';
+            
+            // Calculate summary stats
+            let total = 0, developing = 0, proficient = 0, exemplary = 0;
+            criteria.forEach(c => {
+                const r = ratings[c.id];
+                total += r;
+                if (r <= 3) developing++;
+                else if (r <= 6) proficient++;
+                else exemplary++;
+            });
+            
+            const formData = {
+                staffName: document.getElementById('staffName').value,
+                evaluationDate: document.getElementById('evaluationDate').value,
+                semester: document.getElementById('semester').value,
+                totalScore: total.toString(),
+                developingCount: developing.toString(),
+                proficientCount: proficient.toString(),
+                exemplaryCount: exemplary.toString(),
+                keyStrengths: Array.from(strengths).map(id => criteria.find(c => c.id === id).title).join(', '),
+                growthFocusAreas: Array.from(growthAreas).map(id => criteria.find(c => c.id === id).title).join(', '),
+                quickWins: document.getElementById('quickWins').value,
+                proudOf: document.getElementById('proudOf').value,
+                wantToGrow: document.getElementById('wantToGrow').value,
+                supportNeeded: document.getElementById('supportNeeded').value,
+                criteriaData: criteria.map(c => ({
+                    criterion: c.title,
+                    rating: ratings[c.id],
+                    comments: document.getElementById(`comments-${c.id}`).value,
+                    isStrength: strengths.has(c.id),
+                    isGrowthArea: growthAreas.has(c.id)
+                })),
+                submissionTimestamp: new Date().toISOString()
+            };
+            
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(formData)
+                });
+                
+                // Clear draft on successful submission
+                clearDraft();
+                clearInterval(autosaveTimer);
+                
+                alert('✅ Appraisal submitted successfully!\n\n📧 Email notifications sent to:\n• todd.forgette@waynestem.org\n• courtney.smith@waynestem.org\n• josh.preskitt@waynestem.org\n\n📊 Data saved to Google Sheets');
+                
+                if (confirm('Start a new appraisal?')) {
+                    location.reload();
+                }
+                
+            } catch (error) {
+                alert('❌ Submission error: ' + error.message + '\n\nPlease contact JP if this continues.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📧 Submit Appraisal';
+                isSubmitting = false;
+                confirmedSubmission = false;
+            }
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('reviewModal');
+            if (event.target == modal) {
+                closeReviewModal();
+            }
+        }
+    </script>
+</body>
+</html>
