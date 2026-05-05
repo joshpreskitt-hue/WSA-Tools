@@ -465,6 +465,12 @@
       return;
     }
     showToast('📤 Submitting…', '📤');
+    // Guard: block submission if no ratings are selected
+    var ratingCount = Object.keys(data.ratings || {}).length;
+    if (ratingCount === 0) {
+      showToast('⚠️ No ratings selected — please complete all ratings before submitting', '⚠️');
+      return;
+    }
     var payload  = buildPayload(data);
     var jsonStr  = JSON.stringify(payload);
     var encoded  = encodeURIComponent(jsonStr);
