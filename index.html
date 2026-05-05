@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WSA Tools</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap');
+:root {
+  --navy:#271A70; --navy-dark:#1a1050; --navy-mid:#3a2d8a;
+  --gold:#BFA95F; --gold-light:#E5D9A8; --gold-muted:#d4c07a;
+  --cream:#fafaf7; --gray-100:#f5f5f2; --gray-200:#e8e8e4;
+  --gray-400:#aaa9a4; --gray-500:#888882; --gray-700:#444440;
+  --green:#1a6b2e; --green-bg:#eaf5ec;
+  --blue:#185fa5; --blue-bg:#e6f1fb;
+  --purple-bg:#f0edf9;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Source Sans 3',sans-serif;background:var(--cream);color:var(--gray-700);min-height:100vh;}
+
+/* HERO */
+.hero{background:linear-gradient(145deg,var(--navy-dark) 0%,var(--navy) 60%,var(--navy-mid) 100%);padding:0;position:relative;overflow:hidden;}
+.geo-ring{position:absolute;top:-80px;right:-80px;width:340px;height:340px;border-radius:50%;border:1.5px solid rgba(191,169,95,0.15);pointer-events:none;}
+.geo-ring::before{content:'';position:absolute;inset:30px;border-radius:50%;border:1px solid rgba(191,169,95,0.1);}
+.geo-ring::after{content:'';position:absolute;inset:70px;border-radius:50%;border:1px solid rgba(191,169,95,0.07);}
+.geo-ring2{position:absolute;bottom:-100px;left:-60px;width:260px;height:260px;border-radius:50%;border:1px solid rgba(255,255,255,0.05);pointer-events:none;}
+.hero-inner{max-width:860px;margin:0 auto;padding:48px 40px 40px;position:relative;z-index:1;}
+.hero-eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:14px;}
+.hero-inner h1{font-family:'Playfair Display',serif;font-size:42px;font-weight:700;color:white;line-height:1.1;margin-bottom:10px;}
+.hero-inner h1 span{color:var(--gold);}
+.hero-sub{font-size:15px;color:rgba(255,255,255,0.65);font-weight:300;line-height:1.6;max-width:520px;margin-bottom:24px;}
+.hero-meta{display:flex;gap:0;align-items:center;}
+.hero-stat{text-align:center;padding:0 22px;}
+.hero-stat:first-child{padding-left:0;}
+.hero-stat strong{display:block;font-size:22px;font-weight:600;color:var(--gold);line-height:1;}
+.hero-stat span{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-top:3px;display:block;}
+.hero-divider{width:1px;height:36px;background:rgba(255,255,255,0.15);}
+.gold-bar{width:48px;height:3px;background:var(--gold);border-radius:2px;margin:20px 0 0;}
+
+/* SEARCH */
+.search-wrap{max-width:860px;margin:0 auto;padding:24px 40px 0;position:relative;}
+.search-icon{position:absolute;left:56px;top:50%;transform:translateY(-50%);pointer-events:none;}
+.search-icon svg{width:16px;height:16px;stroke:var(--gray-500);stroke-width:2;fill:none;}
+.search-box{width:100%;border:1.5px solid var(--gray-200);border-radius:8px;padding:11px 16px 11px 40px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--gray-700);background:white;outline:none;transition:border-color 0.2s;}
+.search-box:focus{border-color:var(--navy);}
+.search-box::placeholder{color:var(--gray-400);}
+
+/* MAIN */
+.content{max-width:860px;margin:0 auto;padding:28px 40px 64px;}
+
+/* CATEGORY */
+.category{margin-bottom:32px;}
+.category-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.category-icon{font-size:18px;width:34px;height:34px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.category-label{font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);font-weight:600;}
+.category-count{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--gray-500);margin-left:auto;}
+
+/* CARDS */
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+.card{background:white;border:1px solid var(--gray-200);border-radius:10px;padding:18px 18px 14px;text-decoration:none;color:inherit;display:block;position:relative;transition:all 0.18s;cursor:pointer;}
+.card:hover{border-color:var(--navy);transform:translateY(-2px);box-shadow:0 6px 20px rgba(39,26,112,0.10);}
+.card-arrow{position:absolute;top:14px;right:14px;width:22px;height:22px;border-radius:50%;background:var(--gray-100);display:flex;align-items:center;justify-content:center;transition:background 0.18s;}
+.card:hover .card-arrow{background:var(--navy);}
+.card-arrow svg{width:10px;height:10px;stroke:var(--gray-500);stroke-width:2;fill:none;transition:stroke 0.18s;}
+.card:hover .card-arrow svg{stroke:var(--gold);}
+.card-title{font-family:'Playfair Display',serif;font-size:14px;font-weight:600;color:var(--navy);margin-bottom:6px;padding-right:28px;line-height:1.3;}
+.badge{display:inline-block;font-size:10px;font-weight:600;letter-spacing:0.5px;background:var(--purple-bg);color:var(--navy);border-radius:4px;padding:2px 7px;margin-bottom:6px;}
+.badge.gold{background:#fdf6e3;color:#7a5c00;}
+.badge.green{background:var(--green-bg);color:var(--green);}
+.badge.blue{background:var(--blue-bg);color:var(--blue);}
+.card-note{font-size:12px;color:var(--gray-500);line-height:1.5;margin-bottom:8px;}
+.card-link{font-size:10.5px;color:var(--gray-400);font-family:'Source Code Pro',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* HIDDEN */
+.card.hidden{display:none;}
+
+/* FOOTER */
+footer{text-align:center;font-size:12px;color:var(--gray-400);padding:24px 0 40px;border-top:1px solid var(--gray-200);max-width:860px;margin:0 auto;}
+
+@media(max-width:600px){
+  .hero-inner{padding:32px 20px 28px;}
+  .search-wrap,.content{padding-left:20px;padding-right:20px;}
+  .search-icon{left:36px;}
+  .card-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="geo-ring"></div>
+  <div class="geo-ring2"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Wayne STEM Academy</div>
+    <h1>WSA <span>Tools</span></h1>
+    <p class="hero-sub">A centralized hub for all operational HTML tools — evaluations, communications, posters, and more.</p>
+    <div class="hero-meta">
+      <div class="hero-stat"><strong>15</strong><span>Live Tools</span></div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat"><strong>4</strong><span>Categories</span></div>
+      <div class="hero-divider"></div>
+      <div class="hero-stat"><strong>May '26</strong><span>Last Updated</span></div>
+    </div>
+    <div class="gold-bar"></div>
+  </div>
+</header>
+
+<div class="search-wrap">
+  <span class="search-icon">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+  </span>
+  <input class="search-box" type="text" id="search" placeholder="Search tools…" autocomplete="off"/>
+</div>
+
+<main class="content">
+
+  <!-- EVALUATIONS -->
+  <div class="category" id="cat-eval">
+    <div class="category-header">
+      <div class="category-icon">📋</div>
+      <span class="category-label">Staff Evaluation Tools</span>
+      <span class="category-count">7 tools</span>
+    </div>
+    <div class="card-grid">
+
+      <a class="card" href="WSA_VBA_Form_V3_ENHANCED.html" target="_blank">
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
+        <div class="card-title">VBA Form — Core Staff</div>
+        <div class="badge gold">v3.0 Enhanced</div>
+        <div class="card-note">Primary values-based appraisal for all WSA staff</div>
+        <div class="card-link">WSA_VBA_Form_V3_ENHANCED.html</div>
+      </a>
+
+      <a class="card" href="Director_Operations_Leadership_Evaluation.html" target="_blank">
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
+        <div class="card-title">Director of Operations & Leadership Eval</div>
+        <div class="badge green">v4 — 13 criteria</div>
+        <div class="card-note">Self-evaluation form — JP | Feeds WSA Team Evaluations Sheet</div>
+        <div class="card-link">Director_Operations_Leadership_Evaluation.html</div>
+      </a>
+
+      <a class="card" href="Custodial_Evaluation.html" target="_blank">
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
+        <div class="card-title">Custodial Evaluation</div>
+        <div class="badge green">v4 — rating guard</div>
+        <div class="card-note">10-criteria form | Feeds WSA Team Evaluations Sheet</div>
+        <div class="card-link">Custodial_Evaluation.html</div>
+      </a>
+
+      <a class="card" href="Transportation_Evaluation.html" target="_blank">
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
+        <div class="card-title">Transportation Evaluation</div>
+        <div class="badge green">v4 — column fix</div>
+        <div class="card-note">Driver evaluation — 9 criteria | Feeds WSA Team Evaluations Sheet</div>
+        <div class="card-link">Transportation_Evaluation.html</div>
+      </a>
+
+      <a class="card" href="Transportation_Head_Evaluation.html" target="_blank">
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
+        <div class="card-title">Transportation Head Evaluation</div>
+        <div class="badge green">v4 — column fix</div>
+        <div class="card-note">Dept head — 10 criteria | Feeds WSA Team Evaluations Sheet</div>
+        <div class="card-link">Transportation_Head_Evaluation.html</div>
+      </a>
+
+      <a class="card" href="Technology_Evaluation_v2.html" target="_blank">
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
+        <div class="card-title">Technology Evaluation</div>
+        <div class="badge green">v4 — column fix</div>
+        <div class="card-note">10-criteria form | Feeds WSA Team Evaluations Sheet</div>
+        <div class="card-link">Technology_Evaluation_v2.html</div>
+      </a>
+
+      <a class="card" href="NSLP_Evaluation_v2.html" target="_blank">
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
+        <div class="card-title">NSLP Evaluation</div>
+        <div class="badge green">v4 — rating guard</div>
+        <div class="card-note">9-criteria form | Feeds WSA Team Evaluations Sheet</div>
+        <div class="card-link">NSLP_Evaluation_v2.html</div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- COMMUNICATIONS -->
+  <div class="category" id="cat-comms">
+    <div class="category-header">
+      <div class="category-icon">📧</div>
+      <span class="category-label">Communications & Email</span>
+      <span class="category-count">2 tools</span>
+    </div>
+    <div class="card-grid">
+
+      <a class="card" href="WSA_Email_Preview.html" target="_blank">
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
+        <div class="card-title">Staff Email Preview</div>
+        <div class="card-note">Preview and copy formatted staff communications</div>
+        <div class="card-link">WSA_Email_Preview.html</div>
+      </a>
+
+      <a class="card" href="WSA_Staff_Announcement.html" target="_blank">
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
+        <div class="card-title">Staff Announcement Template</div>
+        <div class="card-note">Branded announcement email for staff-wide communications</div>
+        <div class="card-link">WSA_Staff_Announcement.html</div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- QR POSTERS -->
+  <div class="category" id="cat-qr">
+    <div class="category-header">
+      <div class="category-icon">📌</div>
+      <span class="category-label">QR Code Posters</span>
+      <span class="category-count">3 tools</span>
+    </div>
+    <div class="card-grid">
+
+      <a class="card" href="WSA_QR_MainCampus_v2.html" target="_blank">
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
+        <div class="card-title">Main Campus QR Poster</div>
+        <div class="badge gold">v2</div>
+        <div class="card-note">Printable QR code poster — Main Campus work orders</div>
+        <div class="card-link">WSA_QR_MainCampus_v2.html</div>
+      </a>
+
+      <a class="card" href="WSA_QR_SatelliteCampus_v1.html" target="_blank">
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
+        <div class="card-title">Satellite Campus QR Poster</div>
+        <div class="badge">v1</div>
+        <div class="card-note">Printable QR code poster — Satellite Campus work orders</div>
+        <div class="card-link">WSA_QR_SatelliteCampus_v1.html</div>
+      </a>
+
+      <a class="card" href="WSA_QR_SatelliteCampus_v2.html" target="_blank">
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
+        <div class="card-title">Satellite Campus QR Poster</div>
+        <div class="badge gold">v2</div>
+        <div class="card-note">Updated QR code poster — Satellite Campus</div>
+        <div class="card-link">WSA_QR_SatelliteCampus_v2.html</div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- OPERATIONS -->
+  <div class="category" id="cat-ops">
+    <div class="category-header">
+      <div class="category-icon">⚙️</div>
+      <span class="category-label">Operations & Facilities</span>
+      <span class="category-count">3 tools</span>
+    </div>
+    <div class="card-grid">
+
+      <a class="card" href="WSA_WorkOrder_Setup.html" target="_blank">
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
+        <div class="card-title">Work Order System Setup Guide</div>
+        <div class="card-note">Step-by-step guide for the WSA work order management system</div>
+        <div class="card-link">WSA_WorkOrder_Setup.html</div>
+      </a>
+
+      <a class="card" href="wsa-project-board.html" target="_blank">
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
+        <div class="card-title">Campus Consolidation Project Board</div>
+        <div class="badge blue">Live</div>
+        <div class="card-note">Task tracking board for the WSA campus consolidation project</div>
+        <div class="card-link">wsa-project-board.html</div>
+      </a>
+
+      <a class="card" href="GitHub_Update_Cheatsheet.html" target="_blank">
+        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
+        <div class="card-title">GitHub Pages — Update Cheat Sheet</div>
+        <div class="badge blue">Reference</div>
+        <div class="card-note">Step-by-step guide for updating WSA Tools on GitHub Pages</div>
+        <div class="card-link">GitHub_Update_Cheatsheet.html</div>
+      </a>
+
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  Wayne STEM Academy · WSA Tools Hub · github.com/joshpreskitt-hue/WSA-Tools · Updated May 2026
+</footer>
+
+<script>
+const searchInput = document.getElementById('search');
+searchInput.addEventListener('input', function() {
+  const q = this.value.toLowerCase().trim();
+  document.querySelectorAll('.card').forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.classList.toggle('hidden', q.length > 0 && !text.includes(q));
+  });
+  document.querySelectorAll('.category').forEach(cat => {
+    const visible = [...cat.querySelectorAll('.card')].some(c => !c.classList.contains('hidden'));
+    cat.style.display = (!q || visible) ? '' : 'none';
+  });
+});
+</script>
+</body>
+</html>
