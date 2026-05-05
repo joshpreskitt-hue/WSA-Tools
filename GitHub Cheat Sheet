@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Pages — WSA Update Cheat Sheet</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@300;400;500;600&family=Source+Code+Pro:wght@400;500&display=swap');
+  :root {
+    --navy:#1a2744; --gold:#c9a84c; --gold-light:#e5d9a8;
+    --cream:#fafaf7; --gray-100:#f5f5f2; --gray-200:#e8e8e4;
+    --gray-500:#888882; --gray-700:#444440;
+    --green:#1a6b2e; --green-bg:#eaf5ec;
+    --blue:#185fa5; --blue-bg:#e6f1fb;
+    --amber:#854f0b; --amber-bg:#faeeda;
+    --red:#a32d2d; --red-bg:#fcebeb;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Source Sans 3',sans-serif; background:var(--cream); color:var(--gray-700); }
+
+  .page-header { background:linear-gradient(135deg,var(--navy) 0%,#243058 100%); color:white; padding:32px 40px 24px; }
+  .badge { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+  .badge-icon { width:44px; height:44px; background:white; border:2.5px solid var(--gold); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; }
+  .school-label { font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--gold-light); }
+  .school-label strong { display:block; font-size:14px; letter-spacing:1px; }
+  h1 { font-family:'Playfair Display',serif; font-size:26px; line-height:1.2; }
+  .subtitle { font-size:13px; color:rgba(255,255,255,0.65); margin-top:4px; }
+  .gold-bar { width:50px; height:3px; background:var(--gold); border-radius:2px; margin-top:14px; }
+  .repo-pill { display:inline-flex; align-items:center; gap:6px; background:rgba(201,168,76,0.18); border:1px solid rgba(201,168,76,0.35); border-radius:16px; padding:4px 12px; margin-top:10px; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--gold-light); font-weight:600; }
+
+  .content { max-width:820px; margin:0 auto; padding:32px 40px 60px; }
+
+  /* Quick nav */
+  .quick-nav { background:white; border:1px solid var(--gray-200); border-radius:10px; padding:16px 20px; margin-bottom:28px; display:flex; gap:24px; flex-wrap:wrap; }
+  .nav-item { font-size:12px; font-weight:600; letter-spacing:0.5px; color:var(--blue); text-decoration:none; display:flex; align-items:center; gap:5px; }
+  .nav-num { width:18px; height:18px; background:var(--navy); color:var(--gold); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; flex-shrink:0; }
+
+  /* Section cards */
+  .section { background:white; border:1px solid var(--gray-200); border-radius:12px; margin-bottom:20px; overflow:hidden; }
+  .section-head { background:var(--navy); padding:14px 20px; display:flex; align-items:center; gap:12px; }
+  .section-num { width:30px; height:30px; background:rgba(201,168,76,0.22); border:1px solid rgba(201,168,76,0.4); border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-size:15px; color:var(--gold); flex-shrink:0; }
+  .section-title { font-family:'Playfair Display',serif; font-size:16px; color:white; }
+  .section-sub { font-size:11px; color:rgba(255,255,255,0.5); margin-top:1px; }
+  .section-body { padding:20px 24px; }
+
+  /* Steps */
+  .steps { display:flex; flex-direction:column; gap:12px; }
+  .step { display:grid; grid-template-columns:28px 1fr; gap:12px; align-items:start; }
+  .step-dot { width:28px; height:28px; background:var(--gray-100); border:1.5px solid var(--gray-200); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; color:var(--navy); flex-shrink:0; margin-top:1px; }
+  .step-dot.done { background:var(--green-bg); border-color:#b8d8bf; color:var(--green); }
+  .step-content { font-size:14px; line-height:1.6; }
+  .step-content strong { color:var(--navy); font-weight:600; }
+  .step-content .note { font-size:12px; color:var(--gray-500); margin-top:3px; }
+
+  /* Code / path */
+  code { font-family:'Source Code Pro',monospace; font-size:12.5px; background:var(--gray-100); border:1px solid var(--gray-200); border-radius:4px; padding:1px 6px; color:var(--navy); }
+
+  /* Method tabs */
+  .methods { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:0; }
+  .method-card { border:1px solid var(--gray-200); border-radius:8px; overflow:hidden; }
+  .method-head { padding:10px 14px; font-size:11px; font-weight:600; letter-spacing:1px; text-transform:uppercase; }
+  .method-head.blue { background:var(--blue-bg); color:var(--blue); }
+  .method-head.gold { background:#fdf6e3; color:var(--amber); }
+  .method-body { padding:12px 14px; font-size:13px; line-height:1.65; }
+  .method-body .step { margin-bottom:6px; }
+  .method-body .step:last-child { margin-bottom:0; }
+
+  /* Alert boxes */
+  .alert { border-radius:8px; padding:12px 14px; font-size:13px; line-height:1.6; display:flex; gap:10px; margin-top:14px; }
+  .alert-icon { font-size:15px; flex-shrink:0; margin-top:1px; }
+  .alert.green { background:var(--green-bg); color:var(--green); }
+  .alert.amber { background:var(--amber-bg); color:var(--amber); }
+  .alert.blue { background:var(--blue-bg); color:var(--blue); }
+  .alert.red { background:var(--red-bg); color:var(--red); }
+
+  /* Reference table */
+  .ref-table { width:100%; border-collapse:collapse; font-size:13px; }
+  .ref-table th { background:var(--navy); color:var(--gold); font-size:10px; letter-spacing:1.2px; text-transform:uppercase; padding:8px 12px; text-align:left; font-weight:600; }
+  .ref-table td { padding:9px 12px; border-bottom:1px solid var(--gray-100); vertical-align:top; }
+  .ref-table tr:last-child td { border-bottom:none; }
+  .ref-table tr:nth-child(even) td { background:var(--gray-100); }
+  .ref-table td:first-child { font-family:'Source Code Pro',monospace; font-size:12px; color:var(--navy); font-weight:500; white-space:nowrap; }
+  .ref-table td:last-child { color:var(--gray-500); }
+
+  /* Two-col layout */
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+
+  .divider { height:1px; background:var(--gray-100); margin:16px 0; }
+
+  /* Footer */
+  .footer { text-align:center; font-size:12px; color:var(--gray-500); margin-top:32px; padding-top:20px; border-top:1px solid var(--gray-200); }
+
+  @media print {
+    body { background:white; }
+    .content { padding:20px; }
+    .section { break-inside:avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="badge">
+    <div class="badge-icon">🚀</div>
+    <div>
+      <div class="school-label"><strong>Wayne STEM Academy</strong>Internal Reference</div>
+    </div>
+  </div>
+  <h1>GitHub Pages — Update Cheat Sheet</h1>
+  <p class="subtitle">How to push updated HTML files to your WSA Tools site</p>
+  <div class="repo-pill">⚙ github.com/joshpreskitt-hue/WSA-Tools</div>
+  <div class="gold-bar"></div>
+</div>
+
+<div class="content">
+
+  <!-- Quick nav -->
+  <div class="quick-nav">
+    <span style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--gray-500);align-self:center;">Jump to:</span>
+    <a class="nav-item" href="#s1"><span class="nav-num">1</span> Replace a file</a>
+    <a class="nav-item" href="#s2"><span class="nav-num">2</span> Upload a new file</a>
+    <a class="nav-item" href="#s3"><span class="nav-num">3</span> Edit code directly</a>
+    <a class="nav-item" href="#s4"><span class="nav-num">4</span> Apps Script</a>
+    <a class="nav-item" href="#s5"><span class="nav-num">5</span> Quick reference</a>
+  </div>
+
+  <!-- Section 1 -->
+  <div class="section" id="s1">
+    <div class="section-head">
+      <div class="section-num">1</div>
+      <div>
+        <div class="section-title">Replace an existing HTML file</div>
+        <div class="section-sub">Most common — pushing an updated eval form or tool</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="steps">
+        <div class="step">
+          <div class="step-dot">1</div>
+          <div class="step-content">
+            Go to <strong>github.com/joshpreskitt-hue/WSA-Tools</strong> and sign in.
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">2</div>
+          <div class="step-content">
+            Navigate to the folder containing the file you want to replace (e.g. click into the <code>evaluations</code> folder).
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">3</div>
+          <div class="step-content">
+            Click the filename of the file you're replacing.
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">4</div>
+          <div class="step-content">
+            Click the <strong>pencil icon ✏️</strong> (Edit this file) in the top-right of the file viewer.
+            <div class="note">If you don't see the pencil, make sure you're logged in and on the correct repo.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">5</div>
+          <div class="step-content">
+            <strong>Select all</strong> the existing code (<code>Ctrl+A</code> / <code>Cmd+A</code>) and <strong>delete it</strong>.
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">6</div>
+          <div class="step-content">
+            <strong>Paste</strong> your new file contents (<code>Ctrl+V</code> / <code>Cmd+V</code>).
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot">7</div>
+          <div class="step-content">
+            Scroll to the bottom → <strong>Commit changes</strong> button → add a short message (e.g. <em>"Update Custodial eval v4 — rating fix"</em>) → click <strong>Commit changes</strong>.
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-dot done">✓</div>
+          <div class="step-content">
+            GitHub Pages rebuilds automatically. <strong>Wait 30–60 seconds</strong>, then hard-refresh the live URL (<code>Ctrl+Shift+R</code> / <code>Cmd+Shift+R</code>) to see changes.
+          </div>
+        </div>
+      </div>
+      <div class="alert amber">
+        <span class="alert-icon">⚠</span>
+        <span><strong>Don't use the "Upload files" button to replace an existing file</strong> — GitHub will create a duplicate instead of overwriting. Always use the pencil edit method for replacements.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="section" id="s2">
+    <div class="section-head">
+      <div class="section-num">2</div>
+      <div>
+        <div class="section-title">Upload a brand new file</div>
+        <div class="section-sub">Adding a new eval form or tool that doesn't exist yet</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="steps">
+        <div class="step">
+          <div class="step-dot">1</div>
+          <div class="step-content">Navigate to the <strong>folder</strong> in the repo where the new file should live.</div>
+        </div>
+        <div class="step">
+          <div class="step-dot">2</div>
+          <div class="step-content">Click <strong>Add file</strong> → <strong>Upload files</strong>.</div>
+        </div>
+        <div class="step">
+          <div class="step-dot">3</div>
+          <div class="step-content">Drag and drop the file from your Downloads folder, or click <strong>choose your files</strong> to browse.</div>
+        </div>
+        <div class="step">
+          <div class="step-dot">4</div>
+          <div class="step-content">Add a commit message at the bottom → <strong>Commit changes</strong>.</div>
+        </div>
+        <div class="step">
+          <div class="step-dot done">✓</div>
+          <div class="step-content">Wait 30–60 seconds → hard-refresh the live URL.</div>
+        </div>
+      </div>
+      <div class="alert blue">
+        <span class="alert-icon">ℹ</span>
+        <span>The live URL for any file in the repo follows this pattern:<br>
+        <code>https://joshpreskitt-hue.github.io/WSA-Tools/[folder]/[filename].html</code></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="section" id="s3">
+    <div class="section-head">
+      <div class="section-num">3</div>
+      <div>
+        <div class="section-title">Edit code directly in GitHub (small changes only)</div>
+        <div class="section-sub">Fixing a URL, label, or config value without downloading</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="steps">
+        <div class="step">
+          <div class="step-dot">1</div>
+          <div class="step-content">Navigate to the file in the repo → click the <strong>pencil icon ✏️</strong>.</div>
+        </div>
+        <div class="step">
+          <div class="step-dot">2</div>
+          <div class="step-content">Use <code>Ctrl+F</code> to find the text you want to change, edit directly in the browser.</div>
+        </div>
+        <div class="step">
+          <div class="step-dot">3</div>
+          <div class="step-content">Scroll down → add a commit message → <strong>Commit changes</strong>.</div>
+        </div>
+      </div>
+      <div class="alert green">
+        <span class="alert-icon">✓</span>
+        <span>This is the fastest way to update a <strong>SCRIPT_URL</strong> in an eval form after a new Apps Script deployment — no download needed.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="section" id="s4">
+    <div class="section-head">
+      <div class="section-num">4</div>
+      <div>
+        <div class="section-title">Updating the Google Apps Script</div>
+        <div class="section-sub">Same URL, no HTML changes needed when done correctly</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="methods">
+        <div class="method-card">
+          <div class="method-head blue">✅ Preferred — keep same URL</div>
+          <div class="method-body">
+            <div class="step"><div class="step-dot" style="width:22px;height:22px;font-size:11px;">1</div><div class="step-content">Open script → paste new code → Save (<code>Ctrl+S</code>).</div></div>
+            <div class="step"><div class="step-dot" style="width:22px;height:22px;font-size:11px;">2</div><div class="step-content">Click <strong>Deploy</strong> → <strong>Manage deployments</strong>.</div></div>
+            <div class="step"><div class="step-dot" style="width:22px;height:22px;font-size:11px;">3</div><div class="step-content">Click the <strong>pencil ✏️</strong> on your existing deployment.</div></div>
+            <div class="step"><div class="step-dot" style="width:22px;height:22px;font-size:11px;">4</div><div class="step-content">Under Version, select <strong>New version</strong>.</div></div>
+            <div class="step"><div class="step-dot" style="width:22px;height:22px;font-size:11px;">5</div><div class="step-content">Click <strong>Deploy</strong>. Same URL, no HTML updates needed.</div></div>
+          </div>
+        </div>
+        <div class="method-card">
+          <div class="method-head gold">⚠ New deployment — URL changes</div>
+          <div class="method-body">
+            <div class="step"><div class="step-dot" style="width:22px;height:22px;font-size:11px;">1</div><div class="step-content">Deploy → <strong>New Deployment</strong>.</div></div>
+            <div class="step"><div class="step-dot" style="width:22px;height:22px;font-size:11px;">2</div><div class="step-content">Type: <strong>Web App</strong>. Execute as: <strong>Me</strong>. Access: <strong>Anyone</strong>.</div></div>
+            <div class="step"><div class="step-dot" style="width:22px;height:22px;font-size:11px;">3</div><div class="step-content">Copy the new URL.</div></div>
+            <div class="step"><div class="step-dot" style="width:22px;height:22px;font-size:11px;">4</div><div class="step-content">Update <code>SCRIPT_URL</code> in <strong>all 6 HTML files</strong> on GitHub.</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="alert red" style="margin-top:14px;">
+        <span class="alert-icon">✕</span>
+        <span><strong>Never set access to "Anyone with Google account"</strong> — Google will strip all POST data before it reaches the script. Must be <strong>Anyone</strong> (no login required).</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="section" id="s5">
+    <div class="section-head">
+      <div class="section-num">5</div>
+      <div>
+        <div class="section-title">Quick reference</div>
+        <div class="section-sub">WSA eval forms, common issues, and timing</div>
+      </div>
+    </div>
+    <div class="section-body">
+
+      <p style="font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--gray-500);margin-bottom:10px;">Eval form files</p>
+      <table class="ref-table" style="margin-bottom:20px;">
+        <thead><tr><th>Filename</th><th>Department</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Custodial_Evaluation.html</td><td>Custodial</td><td>Rating validation guard added v4</td></tr>
+          <tr><td>Transportation_Evaluation.html</td><td>Transportation (drivers)</td><td></td></tr>
+          <tr><td>Transportation_Head_Evaluation.html</td><td>Transportation Head</td><td>r_ prefix on all radio names</td></tr>
+          <tr><td>Technology_Evaluation_v2.html</td><td>Technology</td><td>val2b rating key (10th rating)</td></tr>
+          <tr><td>NSLP_Evaluation_v2.html</td><td>NSLP</td><td>Rating validation guard added v4. 9 ratings (no 10th)</td></tr>
+          <tr><td>Director_Operations_Leadership_Evaluation.html</td><td>Director Operations</td><td>13 ratings — largest dept</td></tr>
+        </tbody>
+      </table>
+
+      <p style="font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--gray-500);margin-bottom:10px;">Timing & troubleshooting</p>
+      <table class="ref-table">
+        <thead><tr><th>Situation</th><th>Wait time / action</th></tr></thead>
+        <tbody>
+          <tr><td>After committing to GitHub</td><td>30–60 seconds for Pages to rebuild. Hard-refresh browser (Ctrl+Shift+R).</td></tr>
+          <tr><td>After deploying new Apps Script version</td><td>Immediate — no wait needed.</td></tr>
+          <tr><td>Submission shows ✅ toast but nothing in sheet</td><td>Check _Debug tab in the Google Sheet — look at "Rating Values" column. If blank, ratings weren't selected on the form before Submit.</td></tr>
+          <tr><td>Script errors</td><td>Check _Errors tab in the Google Sheet for timestamp and error message.</td></tr>
+          <tr><td>Form loads but ratings don't repopulate</td><td>localStorage is device/browser specific. If resubmitting from a different browser, re-enter ratings manually and confirm D/M/E counters show non-zero before submitting.</td></tr>
+          <tr><td>New department needed</td><td>Add to DEPT_RATING_COLS, DEPT_KEY_MAP, and createAllSheets() in Apps Script. Run createAllSheets() once after deploying.</td></tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    WSA Tools · github.com/joshpreskitt-hue/WSA-Tools · Apps Script v4.0 · Updated May 2026
+  </div>
+
+</div>
+</body>
+</html>
