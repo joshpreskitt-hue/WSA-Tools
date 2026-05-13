@@ -1,303 +1,520 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WSA Tools</title>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap');
-:root {
-  --navy:#271A70; --navy-dark:#1a1050; --navy-mid:#3a2d8a;
-  --gold:#BFA95F; --gold-light:#E5D9A8; --gold-muted:#d4c07a;
-  --cream:#fafaf7; --gray-100:#f5f5f2; --gray-200:#e8e8e4;
-  --gray-400:#aaa9a4; --gray-500:#888882; --gray-700:#444440;
-  --green:#1a6b2e; --green-bg:#eaf5ec;
-  --blue:#185fa5; --blue-bg:#e6f1fb;
-  --purple-bg:#f0edf9;
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Source Sans 3',sans-serif;background:var(--cream);color:var(--gray-700);min-height:100vh;}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WSA Tools Hub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --purple: #4A2D82;
+      --purple-dark: #321e5a;
+      --purple-mid: #5e3ea3;
+      --gold: #F5A623;
+      --gold-light: #fbbf49;
+      --gold-pale: #fff8ec;
+      --white: #ffffff;
+      --gray-100: #f7f7fa;
+      --gray-200: #eeeef5;
+      --gray-400: #9997b0;
+      --gray-700: #3d3a55;
+      --shadow-sm: 0 2px 8px rgba(74,45,130,0.08);
+      --shadow-md: 0 6px 24px rgba(74,45,130,0.13);
+      --shadow-lg: 0 12px 40px rgba(74,45,130,0.18);
+      --radius: 14px;
+    }
 
-/* HERO */
-.hero{background:linear-gradient(145deg,var(--navy-dark) 0%,var(--navy) 60%,var(--navy-mid) 100%);padding:0;position:relative;overflow:hidden;}
-.geo-ring{position:absolute;top:-80px;right:-80px;width:340px;height:340px;border-radius:50%;border:1.5px solid rgba(191,169,95,0.15);pointer-events:none;}
-.geo-ring::before{content:'';position:absolute;inset:30px;border-radius:50%;border:1px solid rgba(191,169,95,0.1);}
-.geo-ring::after{content:'';position:absolute;inset:70px;border-radius:50%;border:1px solid rgba(191,169,95,0.07);}
-.geo-ring2{position:absolute;bottom:-100px;left:-60px;width:260px;height:260px;border-radius:50%;border:1px solid rgba(255,255,255,0.05);pointer-events:none;}
-.hero-inner{max-width:860px;margin:0 auto;padding:48px 40px 40px;position:relative;z-index:1;}
-.hero-eyebrow{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:14px;}
-.hero-inner h1{font-family:'Playfair Display',serif;font-size:42px;font-weight:700;color:white;line-height:1.1;margin-bottom:10px;}
-.hero-inner h1 span{color:var(--gold);}
-.hero-sub{font-size:15px;color:rgba(255,255,255,0.65);font-weight:300;line-height:1.6;max-width:520px;margin-bottom:24px;}
-.hero-meta{display:flex;gap:0;align-items:center;}
-.hero-stat{text-align:center;padding:0 22px;}
-.hero-stat:first-child{padding-left:0;}
-.hero-stat strong{display:block;font-size:22px;font-weight:600;color:var(--gold);line-height:1;}
-.hero-stat span{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-top:3px;display:block;}
-.hero-divider{width:1px;height:36px;background:rgba(255,255,255,0.15);}
-.gold-bar{width:48px;height:3px;background:var(--gold);border-radius:2px;margin:20px 0 0;}
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* SEARCH */
-.search-wrap{max-width:860px;margin:0 auto;padding:24px 40px 0;position:relative;}
-.search-icon{position:absolute;left:56px;top:50%;transform:translateY(-50%);pointer-events:none;}
-.search-icon svg{width:16px;height:16px;stroke:var(--gray-500);stroke-width:2;fill:none;}
-.search-box{width:100%;border:1.5px solid var(--gray-200);border-radius:8px;padding:11px 16px 11px 40px;font-family:'Source Sans 3',sans-serif;font-size:14px;color:var(--gray-700);background:white;outline:none;transition:border-color 0.2s;}
-.search-box:focus{border-color:var(--navy);}
-.search-box::placeholder{color:var(--gray-400);}
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--gray-100);
+      color: var(--gray-700);
+      min-height: 100vh;
+    }
 
-/* MAIN */
-.content{max-width:860px;margin:0 auto;padding:28px 40px 64px;}
+    /* ── HEADER ── */
+    header {
+      background: linear-gradient(135deg, var(--purple-dark) 0%, var(--purple) 60%, var(--purple-mid) 100%);
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      background: rgba(245,166,35,0.12);
+      pointer-events: none;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; left: -40px;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      pointer-events: none;
+    }
+    .header-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 48px 32px 40px;
+      position: relative;
+      z-index: 1;
+    }
+    .header-badge {
+      display: inline-block;
+      background: rgba(245,166,35,0.18);
+      border: 1px solid rgba(245,166,35,0.4);
+      color: var(--gold-light);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 99px;
+      margin-bottom: 16px;
+    }
+    .header-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 5vw, 46px);
+      color: var(--white);
+      line-height: 1.15;
+      margin-bottom: 10px;
+    }
+    .header-title span {
+      color: var(--gold);
+    }
+    .header-sub {
+      color: rgba(255,255,255,0.70);
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 32px;
+    }
+    .header-meta {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .meta-pill {
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.85);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 99px;
+    }
 
-/* CATEGORY */
-.category{margin-bottom:32px;}
-.category-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
-.category-icon{font-size:18px;width:34px;height:34px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center;}
-.category-label{font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);font-weight:600;}
-.category-count{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--gray-500);margin-left:auto;}
+    /* ── SEARCH ── */
+    .search-wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 28px 32px 0;
+    }
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--white);
+      border: 2px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 10px 18px;
+      box-shadow: var(--shadow-sm);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .search-box:focus-within {
+      border-color: var(--purple);
+      box-shadow: var(--shadow-md);
+    }
+    .search-icon {
+      color: var(--gray-400);
+      flex-shrink: 0;
+    }
+    #search {
+      border: none;
+      outline: none;
+      font-family: 'Nunito', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--gray-700);
+      width: 100%;
+      background: transparent;
+    }
+    #search::placeholder { color: var(--gray-400); font-weight: 600; }
 
-/* CARDS */
-.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
-.card{background:white;border:1px solid var(--gray-200);border-radius:10px;padding:18px 18px 14px;text-decoration:none;color:inherit;display:block;position:relative;transition:all 0.18s;cursor:pointer;}
-.card:hover{border-color:var(--navy);transform:translateY(-2px);box-shadow:0 6px 20px rgba(39,26,112,0.10);}
-.card-arrow{position:absolute;top:14px;right:14px;width:22px;height:22px;border-radius:50%;background:var(--gray-100);display:flex;align-items:center;justify-content:center;transition:background 0.18s;}
-.card:hover .card-arrow{background:var(--navy);}
-.card-arrow svg{width:10px;height:10px;stroke:var(--gray-500);stroke-width:2;fill:none;transition:stroke 0.18s;}
-.card:hover .card-arrow svg{stroke:var(--gold);}
-.card-title{font-family:'Playfair Display',serif;font-size:14px;font-weight:600;color:var(--navy);margin-bottom:6px;padding-right:28px;line-height:1.3;}
-.badge{display:inline-block;font-size:10px;font-weight:600;letter-spacing:0.5px;background:var(--purple-bg);color:var(--navy);border-radius:4px;padding:2px 7px;margin-bottom:6px;}
-.badge.gold{background:#fdf6e3;color:#7a5c00;}
-.badge.green{background:var(--green-bg);color:var(--green);}
-.badge.blue{background:var(--blue-bg);color:var(--blue);}
-.card-note{font-size:12px;color:var(--gray-500);line-height:1.5;margin-bottom:8px;}
-.card-link{font-size:10.5px;color:var(--gray-400);font-family:'Source Code Pro',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    /* ── MAIN ── */
+    main {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 32px 32px 60px;
+    }
 
-/* HIDDEN */
-.card.hidden{display:none;}
+    /* ── SECTION ── */
+    .section {
+      margin-bottom: 40px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .section-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: var(--purple);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: var(--purple);
+      font-weight: 700;
+    }
+    .section-count {
+      margin-left: auto;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gray-400);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .divider {
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold) 0%, transparent 70%);
+      margin-bottom: 20px;
+      border-radius: 2px;
+    }
 
-/* FOOTER */
-footer{text-align:center;font-size:12px;color:var(--gray-400);padding:24px 0 40px;border-top:1px solid var(--gray-200);max-width:860px;margin:0 auto;}
+    /* ── GRID ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+    }
 
-@media(max-width:600px){
-  .hero-inner{padding:32px 20px 28px;}
-  .search-wrap,.content{padding-left:20px;padding-right:20px;}
-  .search-icon{left:36px;}
-  .card-grid{grid-template-columns:1fr;}
-}
-</style>
+    /* ── CARD ── */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      box-shadow: var(--shadow-sm);
+      border: 1.5px solid var(--gray-200);
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px; height: 100%;
+      background: var(--gold);
+      opacity: 0;
+      transition: opacity 0.18s;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+      border-color: rgba(74,45,130,0.25);
+    }
+    .card:hover::before { opacity: 1; }
+
+    .card-name {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--purple);
+      line-height: 1.35;
+    }
+    .card-note {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--gray-400);
+      line-height: 1.4;
+    }
+    .card-url {
+      font-size: 10.5px;
+      color: var(--gold);
+      font-weight: 700;
+      word-break: break-all;
+      opacity: 0.85;
+      margin-top: auto;
+      padding-top: 6px;
+      border-top: 1px solid var(--gray-200);
+    }
+    .card-arrow {
+      position: absolute;
+      top: 18px; right: 18px;
+      font-size: 16px;
+      color: var(--gray-200);
+      transition: color 0.18s, transform 0.18s;
+    }
+    .card:hover .card-arrow {
+      color: var(--gold);
+      transform: translate(2px, -2px);
+    }
+
+    /* ── HIDDEN ── */
+    .hidden { display: none !important; }
+    .no-results {
+      text-align: center;
+      color: var(--gray-400);
+      font-weight: 700;
+      padding: 48px 0;
+      font-size: 15px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--purple-dark);
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 18px 32px;
+      letter-spacing: 0.04em;
+    }
+    footer span { color: var(--gold); }
+
+    @media (max-width: 600px) {
+      .header-inner, .search-wrap, main { padding-left: 18px; padding-right: 18px; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
 
-<header class="hero">
-  <div class="geo-ring"></div>
-  <div class="geo-ring2"></div>
-  <div class="hero-inner">
-    <div class="hero-eyebrow">Wayne STEM Academy</div>
-    <h1>WSA <span>Tools</span></h1>
-    <p class="hero-sub">A centralized hub for all operational HTML tools — evaluations, communications, posters, and more.</p>
-    <div class="hero-meta">
-      <div class="hero-stat"><strong>15</strong><span>Live Tools</span></div>
-      <div class="hero-divider"></div>
-      <div class="hero-stat"><strong>4</strong><span>Categories</span></div>
-      <div class="hero-divider"></div>
-      <div class="hero-stat"><strong>May '26</strong><span>Last Updated</span></div>
+<header>
+  <div class="header-inner">
+    <div class="header-badge">GitHub Pages · Live Tools</div>
+    <h1 class="header-title">WSA <span>Tools Hub</span></h1>
+    <p class="header-sub">Wayne STEM Academy — Director of Operations &amp; Leadership</p>
+    <div class="header-meta">
+      <span class="meta-pill">📁 Repository: joshpreskitt-hue/WSA-Tools</span>
+      <span class="meta-pill">🗓 Last Updated: May 2026</span>
+      <span class="meta-pill">🔧 14 Live Tools</span>
     </div>
-    <div class="gold-bar"></div>
   </div>
 </header>
 
 <div class="search-wrap">
-  <span class="search-icon">
-    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
-  </span>
-  <input class="search-box" type="text" id="search" placeholder="Search tools…" autocomplete="off"/>
+  <div class="search-box">
+    <svg class="search-icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="search" type="text" placeholder="Search tools…" autocomplete="off" />
+  </div>
 </div>
 
-<main class="content">
+<main id="main">
 
-  <!-- EVALUATIONS -->
-  <div class="category" id="cat-eval">
-    <div class="category-header">
-      <div class="category-icon">📋</div>
-      <span class="category-label">Staff Evaluation Tools</span>
-      <span class="category-count">7 tools</span>
+  <!-- ── STAFF EVALUATION ── -->
+  <section class="section" data-section="Staff Evaluation Tools">
+    <div class="section-header">
+      <div class="section-icon">📋</div>
+      <h2 class="section-title">Staff Evaluation Tools</h2>
+      <span class="section-count">7 tools</span>
     </div>
-    <div class="card-grid">
+    <div class="divider"></div>
+    <div class="grid">
 
-      <a class="card" href="WSA_VBA_Form_V3_ENHANCED.html" target="_blank">
-        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
-        <div class="card-title">VBA Form — Core Staff</div>
-        <div class="badge gold">v3.0 Enhanced</div>
-        <div class="card-note">Primary values-based appraisal for all WSA staff</div>
-        <div class="card-link">WSA_VBA_Form_V3_ENHANCED.html</div>
+      <a class="card" href="https://joshpreskitt-hue.github.io/WSA-Tools/Custodial_Evaluation.html" target="_blank">
+        <span class="card-arrow">↗</span>
+        <div class="card-name">Custodial Evaluation</div>
+        <div class="card-note">Custodial staff VBA form · v4</div>
+        <div class="card-url">Custodial_Evaluation.html</div>
       </a>
 
-      <a class="card" href="Director_Operations_Leadership_Evaluation.html" target="_blank">
-        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
-        <div class="card-title">Director of Operations & Leadership Eval</div>
-        <div class="badge green">v4 — 13 criteria</div>
-        <div class="card-note">Self-evaluation form — JP | Feeds WSA Team Evaluations Sheet</div>
-        <div class="card-link">Director_Operations_Leadership_Evaluation.html</div>
+      <a class="card" href="https://joshpreskitt-hue.github.io/WSA-Tools/Director_Operations_Leadership_Evaluation.html" target="_blank">
+        <span class="card-arrow">↗</span>
+        <div class="card-name">Director of Operations &amp; Leadership Evaluation</div>
+        <div class="card-note">JP self-evaluation form · v4 (13 criteria)</div>
+        <div class="card-url">Director_Operations_Leadership_Evaluation.html</div>
       </a>
 
-      <a class="card" href="Custodial_Evaluation.html" target="_blank">
-        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
-        <div class="card-title">Custodial Evaluation</div>
-        <div class="badge green">v4 — rating guard</div>
-        <div class="card-note">10-criteria form | Feeds WSA Team Evaluations Sheet</div>
-        <div class="card-link">Custodial_Evaluation.html</div>
+      <a class="card" href="https://joshpreskitt-hue.github.io/WSA-Tools/NSLP_Evaluation_v2.html" target="_blank">
+        <span class="card-arrow">↗</span>
+        <div class="card-name">NSLP Evaluation (v2)</div>
+        <div class="card-note">Food services staff · v4</div>
+        <div class="card-url">NSLP_Evaluation_v2.html</div>
       </a>
 
-      <a class="card" href="Transportation_Evaluation.html" target="_blank">
-        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
-        <div class="card-title">Transportation Evaluation</div>
-        <div class="badge green">v4 — column fix</div>
-        <div class="card-note">Driver evaluation — 9 criteria | Feeds WSA Team Evaluations Sheet</div>
-        <div class="card-link">Transportation_Evaluation.html</div>
+      <a class="card" href="https://joshpreskitt-hue.github.io/WSA-Tools/Technology_Evaluation_v2.html" target="_blank">
+        <span class="card-arrow">↗</span>
+        <div class="card-name">Technology Evaluation (v2)</div>
+        <div class="card-note">Tech staff evaluation · v4</div>
+        <div class="card-url">Technology_Evaluation_v2.html</div>
       </a>
 
-      <a class="card" href="Transportation_Head_Evaluation.html" target="_blank">
-        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
-        <div class="card-title">Transportation Head Evaluation</div>
-        <div class="badge green">v4 — column fix</div>
-        <div class="card-note">Dept head — 10 criteria | Feeds WSA Team Evaluations Sheet</div>
-        <div class="card-link">Transportation_Head_Evaluation.html</div>
+      <a class="card" href="https://joshpreskitt-hue.github.io/WSA-Tools/Transportation_Evaluation.html" target="_blank">
+        <span class="card-arrow">↗</span>
+        <div class="card-name">Transportation Evaluation</div>
+        <div class="card-note">Bus driver evaluation · v4</div>
+        <div class="card-url">Transportation_Evaluation.html</div>
       </a>
 
-      <a class="card" href="Technology_Evaluation_v2.html" target="_blank">
-        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
-        <div class="card-title">Technology Evaluation</div>
-        <div class="badge green">v4 — column fix</div>
-        <div class="card-note">10-criteria form | Feeds WSA Team Evaluations Sheet</div>
-        <div class="card-link">Technology_Evaluation_v2.html</div>
+      <a class="card" href="https://joshpreskitt-hue.github.io/WSA-Tools/Transportation_Head_Evaluation.html" target="_blank">
+        <span class="card-arrow">↗</span>
+        <div class="card-name">Transportation Head Evaluation</div>
+        <div class="card-note">Transportation lead · v4</div>
+        <div class="card-url">Transportation_Head_Evaluation.html</div>
       </a>
 
-      <a class="card" href="NSLP_Evaluation_v2.html" target="_blank">
-        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
-        <div class="card-title">NSLP Evaluation</div>
-        <div class="badge green">v4 — rating guard</div>
-        <div class="card-note">9-criteria form | Feeds WSA Team Evaluations Sheet</div>
-        <div class="card-link">NSLP_Evaluation_v2.html</div>
+      <a class="card" href="https://joshpreskitt-hue.github.io/WSA-Tools/WSA_VBA_Form_V3_ENHANCED.html" target="_blank">
+        <span class="card-arrow">↗</span>
+        <div class="card-name">VBA Form V3 Enhanced</div>
+        <div class="card-note">Core staff VBA form · v3.0</div>
+        <div class="card-url">WSA_VBA_Form_V3_ENHANCED.html</div>
       </a>
 
     </div>
-  </div>
+  </section>
 
-  <!-- COMMUNICATIONS -->
-  <div class="category" id="cat-comms">
-    <div class="category-header">
-      <div class="category-icon">📧</div>
-      <span class="category-label">Communications & Email</span>
-      <span class="category-count">2 tools</span>
+  <!-- ── COMMUNICATIONS ── -->
+  <section class="section" data-section="Communications & Email">
+    <div class="section-header">
+      <div class="section-icon">✉️</div>
+      <h2 class="section-title">Communications &amp; Email</h2>
+      <span class="section-count">2 tools</span>
     </div>
-    <div class="card-grid">
+    <div class="divider"></div>
+    <div class="grid">
 
-      <a class="card" href="WSA_Email_Preview.html" target="_blank">
-        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
-        <div class="card-title">Staff Email Preview</div>
-        <div class="card-note">Preview and copy formatted staff communications</div>
-        <div class="card-link">WSA_Email_Preview.html</div>
+      <a class="card" href="https://joshpreskitt-hue.github.io/WSA-Tools/WSA_Email_Previews.html" target="_blank">
+        <span class="card-arrow">↗</span>
+        <div class="card-name">Email Previews</div>
+        <div class="card-note">Rendered email preview tool</div>
+        <div class="card-url">WSA_Email_Previews.html</div>
       </a>
 
-      <a class="card" href="WSA_Staff_Announcement.html" target="_blank">
-        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
-        <div class="card-title">Staff Announcement Template</div>
-        <div class="card-note">Branded announcement email for staff-wide communications</div>
-        <div class="card-link">WSA_Staff_Announcement.html</div>
-      </a>
-
-    </div>
-  </div>
-
-  <!-- QR POSTERS -->
-  <div class="category" id="cat-qr">
-    <div class="category-header">
-      <div class="category-icon">📌</div>
-      <span class="category-label">QR Code Posters</span>
-      <span class="category-count">3 tools</span>
-    </div>
-    <div class="card-grid">
-
-      <a class="card" href="WSA_QR_MainCampus_v2.html" target="_blank">
-        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
-        <div class="card-title">Main Campus QR Poster</div>
-        <div class="badge gold">v2</div>
-        <div class="card-note">Printable QR code poster — Main Campus work orders</div>
-        <div class="card-link">WSA_QR_MainCampus_v2.html</div>
-      </a>
-
-      <a class="card" href="WSA_QR_SatelliteCampus_v1.html" target="_blank">
-        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
-        <div class="card-title">Satellite Campus QR Poster</div>
-        <div class="badge">v1</div>
-        <div class="card-note">Printable QR code poster — Satellite Campus work orders</div>
-        <div class="card-link">WSA_QR_SatelliteCampus_v1.html</div>
-      </a>
-
-      <a class="card" href="WSA_QR_SatelliteCampus_v2.html" target="_blank">
-        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
-        <div class="card-title">Satellite Campus QR Poster</div>
-        <div class="badge gold">v2</div>
-        <div class="card-note">Updated QR code poster — Satellite Campus</div>
-        <div class="card-link">WSA_QR_SatelliteCampus_v2.html</div>
+      <a class="card" href="https://joshpreskitt-hue.github.io/WSA-Tools/WSA_Staff_Announcement_Email.html" target="_blank">
+        <span class="card-arrow">↗</span>
+        <div class="card-name">Staff Announcement Email</div>
+        <div class="card-note">Staff-wide announcement template</div>
+        <div class="card-url">WSA_Staff_Announcement_Email.html</div>
       </a>
 
     </div>
-  </div>
+  </section>
 
-  <!-- OPERATIONS -->
-  <div class="category" id="cat-ops">
-    <div class="category-header">
-      <div class="category-icon">⚙️</div>
-      <span class="category-label">Operations & Facilities</span>
-      <span class="category-count">3 tools</span>
+  <!-- ── QR POSTERS ── -->
+  <section class="section" data-section="QR Code Posters">
+    <div class="section-header">
+      <div class="section-icon">📱</div>
+      <h2 class="section-title">QR Code Posters</h2>
+      <span class="section-count">2 tools</span>
     </div>
-    <div class="card-grid">
+    <div class="divider"></div>
+    <div class="grid">
 
-      <a class="card" href="WSA_WorkOrder_Setup.html" target="_blank">
-        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
-        <div class="card-title">Work Order System Setup Guide</div>
-        <div class="card-note">Step-by-step guide for the WSA work order management system</div>
-        <div class="card-link">WSA_WorkOrder_Setup.html</div>
+      <a class="card" href="https://joshpreskitt-hue.github.io/WSA-Tools/WSA_QR_Poster_MainCampus_v2.html" target="_blank">
+        <span class="card-arrow">↗</span>
+        <div class="card-name">QR Poster — Main Campus (v2)</div>
+        <div class="card-note">Current version · Main Campus</div>
+        <div class="card-url">WSA_QR_Poster_MainCampus_v2.html</div>
       </a>
 
-      <a class="card" href="wsa-project-board.html" target="_blank">
-        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
-        <div class="card-title">Campus Consolidation Project Board</div>
-        <div class="badge blue">Live</div>
-        <div class="card-note">Task tracking board for the WSA campus consolidation project</div>
-        <div class="card-link">wsa-project-board.html</div>
-      </a>
-
-      <a class="card" href="GitHub_Update_Cheatsheet.html" target="_blank">
-        <div class="card-arrow"><svg viewBox="0 0 12 12"><line x1="2" y1="10" x2="10" y2="2"/><polyline points="4,2 10,2 10,8"/></svg></div>
-        <div class="card-title">GitHub Pages — Update Cheat Sheet</div>
-        <div class="badge blue">Reference</div>
-        <div class="card-note">Step-by-step guide for updating WSA Tools on GitHub Pages</div>
-        <div class="card-link">GitHub_Update_Cheatsheet.html</div>
+      <a class="card" href="https://joshpreskitt-hue.github.io/WSA-Tools/WSA_QR_Poster_SatelliteCampus_v2.html" target="_blank">
+        <span class="card-arrow">↗</span>
+        <div class="card-name">QR Poster — Satellite Campus (v2)</div>
+        <div class="card-note">Current version · Satellite Campus</div>
+        <div class="card-url">WSA_QR_Poster_SatelliteCampus_v2.html</div>
       </a>
 
     </div>
-  </div>
+  </section>
+
+  <!-- ── OPERATIONS ── -->
+  <section class="section" data-section="Operations & Facilities">
+    <div class="section-header">
+      <div class="section-icon">🏗</div>
+      <h2 class="section-title">Operations &amp; Facilities</h2>
+      <span class="section-count">2 tools</span>
+    </div>
+    <div class="divider"></div>
+    <div class="grid">
+
+      <a class="card" href="https://joshpreskitt-hue.github.io/WSA-Tools/WSA_WorkOrder_Setup_Guide.html" target="_blank">
+        <span class="card-arrow">↗</span>
+        <div class="card-name">Work Order Setup Guide</div>
+        <div class="card-note">Facilities work order reference</div>
+        <div class="card-url">WSA_WorkOrder_Setup_Guide.html</div>
+      </a>
+
+      <a class="card" href="https://joshpreskitt-hue.github.io/WSA-Tools/wsa-project-board.html" target="_blank">
+        <span class="card-arrow">↗</span>
+        <div class="card-name">Project Board — Campus Consolidation</div>
+        <div class="card-note">HTML project mgmt board w/ Sheets sync</div>
+        <div class="card-url">wsa-project-board.html</div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ── REFERENCE ── -->
+  <section class="section" data-section="Reference & Guides">
+    <div class="section-header">
+      <div class="section-icon">📖</div>
+      <h2 class="section-title">Reference &amp; Guides</h2>
+      <span class="section-count">1 tool</span>
+    </div>
+    <div class="divider"></div>
+    <div class="grid">
+
+      <a class="card" href="https://joshpreskitt-hue.github.io/WSA-Tools/GitHub%20Cheat%20Sheet.html" target="_blank">
+        <span class="card-arrow">↗</span>
+        <div class="card-name">GitHub Cheat Sheet</div>
+        <div class="card-note">Quick reference for managing WSA Tools repo — added May '26</div>
+        <div class="card-url">GitHub Cheat Sheet.html</div>
+      </a>
+
+    </div>
+  </section>
+
+  <div class="no-results hidden" id="no-results">No tools matched your search.</div>
 
 </main>
 
 <footer>
-  Wayne STEM Academy · WSA Tools Hub · github.com/joshpreskitt-hue/WSA-Tools · Updated May 2026
+  <span>Wayne STEM Academy</span> · Director of Operations &amp; Leadership · joshpreskitt-hue.github.io/WSA-Tools
 </footer>
 
 <script>
-const searchInput = document.getElementById('search');
-searchInput.addEventListener('input', function() {
-  const q = this.value.toLowerCase().trim();
-  document.querySelectorAll('.card').forEach(card => {
-    const text = card.textContent.toLowerCase();
-    card.classList.toggle('hidden', q.length > 0 && !text.includes(q));
+  const search = document.getElementById('search');
+  const noResults = document.getElementById('no-results');
+
+  search.addEventListener('input', () => {
+    const q = search.value.toLowerCase().trim();
+    const sections = document.querySelectorAll('.section');
+    let anyVisible = false;
+
+    sections.forEach(sec => {
+      const cards = sec.querySelectorAll('.card');
+      let sectionHasMatch = false;
+
+      cards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        const match = !q || text.includes(q);
+        card.classList.toggle('hidden', !match);
+        if (match) sectionHasMatch = true;
+      });
+
+      sec.classList.toggle('hidden', !sectionHasMatch);
+      if (sectionHasMatch) anyVisible = true;
+    });
+
+    noResults.classList.toggle('hidden', anyVisible);
   });
-  document.querySelectorAll('.category').forEach(cat => {
-    const visible = [...cat.querySelectorAll('.card')].some(c => !c.classList.contains('hidden'));
-    cat.style.display = (!q || visible) ? '' : 'none';
-  });
-});
 </script>
+
 </body>
 </html>
