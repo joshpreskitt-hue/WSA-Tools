@@ -120,6 +120,38 @@
     .sig-grid { grid-template-columns:1fr; } .rubric-row { grid-template-columns:1fr; }
     .criteria-item { grid-template-columns:1fr; }
   }
+
+  /* ===== PRINT BUTTON ===== */
+  .btn-print {
+    background: var(--teal, #2e7d7a);
+    color: white;
+    border: none;
+    padding: 13px 28px;
+    border-radius: 8px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-right: 12px;
+  }
+  .btn-print:hover { background: #246361; transform: translateY(-1px); }
+
+  /* ===== PRINT / PDF MEDIA QUERY ===== */
+  @media print {
+    .autosave-indicator, .eval-type-banner, .driver-slot-banner,
+    .submit-area, .rubric-toggle, .toast { display: none !important; }
+    .rubric-box { display: none !important; }
+    body { background: white !important; }
+    .page-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .section-card  { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .main-content  { padding: 16px 20px !important; }
+    .section-card, .info-panel, .score-summary, .goals-section,
+    .signature-section, .mission-block { break-inside: avoid; page-break-inside: avoid; }
+    .criteria-item { break-inside: avoid; }
+  }
 </style>
 </head>
 <body>
@@ -146,6 +178,16 @@
     <button class="eval-type-btn active" onclick="setEvalType('BOY', this)">Beginning of Year</button>
     <button class="eval-type-btn" onclick="setEvalType('MID', this)">Mid-Year</button>
     <button class="eval-type-btn" onclick="setEvalType('EOY', this)">End of Year</button>
+  </div>
+</div>
+
+<div class="driver-slot-banner" style="background:#f0d98a;padding:0;">
+  <div class="eval-type-inner" style="align-items:center;display:flex;">
+    <span style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--navy);padding:10px 16px 10px 8px;flex-shrink:0;">🚌 Driver Slot:</span>
+    <button class="eval-type-btn active" style="color:var(--navy);" onclick="setDriverSlot('1',this)" id="driverBtn1">Driver 1</button>
+    <button class="eval-type-btn" style="color:var(--navy);" onclick="setDriverSlot('2',this)" id="driverBtn2">Driver 2</button>
+    <button class="eval-type-btn" style="color:var(--navy);" onclick="setDriverSlot('3',this)" id="driverBtn3">Driver 3</button>
+    <button class="eval-type-btn" style="color:var(--navy);" onclick="setDriverSlot('4',this)" id="driverBtn4">Driver 4</button>
   </div>
 </div>
 
@@ -178,7 +220,7 @@
   <!-- SECTION 1: SAFETY & OPERATIONS -->
   <div class="section-card">
     <div class="section-header">
-      <div class="section-icon">🛡️</div>
+      <div class="section-icon">🛡�?</div>
       <div><div class="section-title">Vehicle Safety & Operations</div><div class="section-subtitle">Compliance, condition, and safe operating practices</div></div>
     </div>
     <div class="criteria-list">
@@ -420,7 +462,7 @@
   <!-- OVERALL COMMENTS -->
   <div class="section-card">
     <div class="section-header">
-      <div class="section-icon">📝</div>
+      <div class="section-icon">�?</div>
       <div><div class="section-title">Overall Evaluator Comments</div><div class="section-subtitle">Summary narrative for this evaluation period</div></div>
     </div>
     <div class="comment-section">
@@ -435,7 +477,7 @@
 
   <!-- SIGNATURES -->
   <div class="signature-section">
-    <div class="goals-title" style="margin-bottom:18px;font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);">✍️ Signatures & Acknowledgment</div>
+    <div class="goals-title" style="margin-bottom:18px;font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);">�?�? Signatures & Acknowledgment</div>
     <div class="sig-grid">
       <div class="sig-field"><label>Evaluator Signature</label><input type="text" class="sig-line" id="sigEvaluator" placeholder="Sign here"></div>
       <div class="sig-field"><label>Date</label><input type="text" class="sig-date" id="sigEvalDate" placeholder="MM/DD/YYYY"></div>
@@ -448,6 +490,7 @@
 
   <div class="submit-area">
     <button class="btn-save" onclick="saveLocal()">💾 Save Draft</button>
+    <button class="btn-print" onclick="window.print()">🖨️ Print / Save PDF</button>
     <button class="btn-submit" onclick="submitEval()">Submit to Google Sheets →</button>
   </div>
 </div>
@@ -458,6 +501,35 @@
   const DEPT = 'Transportation';
   const SCRIPT_URL = 'https://script.google.com/a/macros/waynestem.org/s/AKfycbw591_HuIqU8Td0UlVDF8IauBe58p8fOODgsaXAD2X5jqUZun1EyFeYSuNf7uKDmCMH/exec';
   let currentEvalType = 'BOY';
+
+  let currentDriverSlot = '1';
+  const driverNames = { '1':'', '2':'', '3':'', '4':'' };
+
+  function updateDriverTabLabel(slot) {
+    const btn = document.getElementById('driverBtn' + slot);
+    if (!btn) return;
+    const name = driverNames[slot];
+    btn.textContent = name ? 'Driver ' + slot + ' – ' + name.split(' ').pop() : 'Driver ' + slot;
+  }
+
+  function setDriverSlot(slot, btn) {
+    currentDriverSlot = slot;
+    document.querySelectorAll('.driver-slot-banner .eval-type-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    // Clear form fields before loading saved slot data
+    document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+    ['employeeName','evaluatorName','position','schoolYear'].forEach(f => {
+      const el = document.getElementById(f); if (el) el.value = '';
+    });
+    document.querySelectorAll('textarea').forEach(t => t.value = '');
+    ['sigEvaluator','sigEvalDate','sigEmployee','sigEmpDate','sigDirector'].forEach(f => {
+      const el = document.getElementById(f); if (el) el.value = '';
+    });
+    loadFromStorage();
+    updateSummary();
+    showToast('🚌 Switched to Driver ' + slot + (driverNames[slot] ? ' – ' + driverNames[slot] : ''), '🚌');
+  }
+
   const evalTypeLabels = { BOY:'Beginning of Year (BOY)', MID:'Mid-Year', EOY:'End of Year (EOY)' };
   function setEvalType(type, btn) { currentEvalType = type; document.getElementById('evalTypeDisplay').textContent = evalTypeLabels[type]; document.querySelectorAll('.eval-type-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); loadFromStorage(); showToast(`📋 Switched to ${evalTypeLabels[type]}`, '📋'); }
   function toggleRubric(id) { document.getElementById(id).classList.toggle('open'); }
@@ -471,11 +543,11 @@
     document.getElementById('countE').textContent = total ? e : '—';
     if(!total) { document.getElementById('overallRating').textContent = 'Complete all ratings above'; return; }
     const pct = (e*100+m*60+d*20)/(total*100)*100;
-    document.getElementById('overallRating').textContent = pct>=80?'⭐ Distinguished / Exemplary':pct>=60?'✅ Proficient / Meets & Exceeds':pct>=40?'🔶 Developing with Progress':'⚠️ Needs Development & Support';
+    document.getElementById('overallRating').textContent = pct>=80?'�? Distinguished / Exemplary':pct>=60?'✅ Proficient / Meets & Exceeds':pct>=40?'🔶 Developing with Progress':'⚠�? Needs Development & Support';
   }
   document.querySelectorAll('input[type="radio"]').forEach(r => r.addEventListener('change', () => { updateSummary(); autoSave(); }));
   document.querySelectorAll('input, textarea').forEach(el => el.addEventListener('input', autoSave));
-  function getStorageKey() { return `wsa_${DEPT}_${currentEvalType}`; }
+  function getStorageKey() { return `wsa_${DEPT}_${currentEvalType}_Driver${currentDriverSlot}`; }
   function gatherData() {
     const data = { dept:DEPT, evalType:currentEvalType, employeeName:document.getElementById('employeeName').value, evaluatorName:document.getElementById('evaluatorName').value, position:document.getElementById('position').value, evalDate:document.getElementById('evalDate').value, schoolYear:document.getElementById('schoolYear').value, ratings:{}, comments:{ops:document.getElementById('c_ops').value, stud:document.getElementById('c_stud').value, values:document.getElementById('c_values').value, overall:document.getElementById('c_overall').value, employee:document.getElementById('c_employee').value}, goals:{g1:document.getElementById('goal1').value, g2:document.getElementById('goal2').value, g3:document.getElementById('goal3').value}, signatures:{evaluator:document.getElementById('sigEvaluator').value, evalDate:document.getElementById('sigEvalDate').value, employee:document.getElementById('sigEmployee').value, empDate:document.getElementById('sigEmpDate').value, director:document.getElementById('sigDirector').value} };
     document.querySelectorAll('input[type="radio"]:checked').forEach(r => { data.ratings[r.name] = r.value; });
@@ -518,6 +590,7 @@
     return p;
   }
 
+
   function submitEval() {
     var data = gatherData();
     if (!data.employeeName) {
@@ -528,13 +601,25 @@
       showToast('⚙️ Script URL not configured', '⚙️');
       return;
     }
+    // ── Submission Guard ──────────────────────────────────────────────────
+    const driverLabel = driverNames[currentDriverSlot]
+      ? 'Driver ' + currentDriverSlot + ' – ' + driverNames[currentDriverSlot]
+      : 'Driver ' + currentDriverSlot;
+    const evalLabel = evalTypeLabels[currentEvalType] || currentEvalType;
+    const confirmed = window.confirm(
+      '✅ Submit Confirmation\n\n' +
+      'Driver Slot : ' + driverLabel + '\n' +
+      'Employee    : ' + data.employeeName + '\n' +
+      'Eval Period : ' + evalLabel + '\n\n' +
+      'Submit this evaluation to Google Sheets?'
+    );
+    if (!confirmed) { showToast('↩️ Submission cancelled', '↩️'); return; }
+    // ─────────────────────────────────────────────────────────────────────
     showToast('📤 Submitting…', '📤');
     var payload  = buildPayload(data);
     var jsonStr  = JSON.stringify(payload);
     var encoded  = encodeURIComponent(jsonStr);
     var fullURL  = SCRIPT_URL + '?payload=' + encoded;
-    // Use an Image() request - works cross-origin with no CORS issues whatsoever
-    // and is not blocked by Google Workspace auth redirects
     var img = new Image();
     img.onload = img.onerror = function() {
       try { localStorage.setItem(getStorageKey() + '_submitted', jsonStr); } catch(e) {}
@@ -543,9 +628,17 @@
     img.src = fullURL;
   }
 
+
   function showToast(msg, icon='✅') { const t=document.getElementById('toast'); document.getElementById('toastMsg').textContent=msg; document.getElementById('toastIcon').textContent=icon; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),3200); }
   document.getElementById('evalDate').value = new Date().toISOString().split('T')[0];
   loadFromStorage(); updateSummary();
+
+  // Update driver tab label whenever the Employee Name field changes
+  document.getElementById('employeeName').addEventListener('input', function() {
+    driverNames[currentDriverSlot] = this.value.trim();
+    updateDriverTabLabel(currentDriverSlot);
+  });
+
 </script>
 </body>
 </html>
