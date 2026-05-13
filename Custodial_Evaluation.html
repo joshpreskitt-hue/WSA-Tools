@@ -701,6 +701,38 @@
     .rating-group { min-width: unset; }
     .criteria-item { grid-template-columns: 1fr; }
   }
+
+  /* ===== PRINT BUTTON ===== */
+  .btn-print {
+    background: var(--teal, #2e7d7a);
+    color: white;
+    border: none;
+    padding: 13px 28px;
+    border-radius: 8px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-right: 12px;
+  }
+  .btn-print:hover { background: #246361; transform: translateY(-1px); }
+
+  /* ===== PRINT / PDF MEDIA QUERY ===== */
+  @media print {
+    .autosave-indicator, .eval-type-banner, .driver-slot-banner,
+    .submit-area, .rubric-toggle, .toast { display: none !important; }
+    .rubric-box { display: none !important; }
+    body { background: white !important; }
+    .page-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .section-card  { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .main-content  { padding: 16px 20px !important; }
+    .section-card, .info-panel, .score-summary, .goals-section,
+    .signature-section, .mission-block { break-inside: avoid; page-break-inside: avoid; }
+    .criteria-item { break-inside: avoid; }
+  }
 </style>
 </head>
 <body>
@@ -785,7 +817,7 @@
   <!-- ===== SECTION 1: FACILITY CARE ===== -->
   <div class="section-card">
     <div class="section-header">
-      <div class="section-icon">🏫</div>
+      <div class="section-icon">�?�</div>
       <div>
         <div class="section-title">Facility Care & Cleanliness</div>
         <div class="section-subtitle">Day-to-day maintenance of WSA's learning environment</div>
@@ -1082,7 +1114,7 @@
   <!-- OVERALL COMMENTS -->
   <div class="section-card">
     <div class="section-header">
-      <div class="section-icon">📝</div>
+      <div class="section-icon">�?</div>
       <div>
         <div class="section-title">Overall Evaluator Comments</div>
         <div class="section-subtitle">Summary narrative for this evaluation period</div>
@@ -1100,7 +1132,7 @@
 
   <!-- SIGNATURES -->
   <div class="signature-section">
-    <div class="goals-title" style="margin-bottom:18px; font-family:'Playfair Display',serif; font-size:17px; color:var(--navy);">✍️ Signatures & Acknowledgment</div>
+    <div class="goals-title" style="margin-bottom:18px; font-family:'Playfair Display',serif; font-size:17px; color:var(--navy);">�?�? Signatures & Acknowledgment</div>
     <div class="sig-grid">
       <div class="sig-field">
         <label>Evaluator Signature</label>
@@ -1131,6 +1163,7 @@
   <!-- SUBMIT -->
   <div class="submit-area">
     <button class="btn-save" onclick="saveLocal()">💾 Save Draft</button>
+    <button class="btn-print" onclick="window.print()">🖨️ Print / Save PDF</button>
     <button class="btn-submit" onclick="submitEval()">Submit to Google Sheets →</button>
   </div>
 
@@ -1188,10 +1221,10 @@
     }
     const pct = (e*100 + m*60 + d*20) / (total*100) * 100;
     let label = '';
-    if(pct >= 80) label = '⭐ Distinguished / Exemplary';
+    if(pct >= 80) label = '�? Distinguished / Exemplary';
     else if(pct >= 60) label = '✅ Proficient / Meets & Exceeds';
     else if(pct >= 40) label = '🔶 Developing with Progress';
-    else label = '⚠️ Needs Development & Support';
+    else label = '⚠�? Needs Development & Support';
     document.getElementById('overallRating').textContent = label;
   }
 
@@ -1332,17 +1365,11 @@
   function submitEval() {
     var data = gatherData();
     if (!data.employeeName) {
-      showToast('⚠️ Please fill in Employee name', '⚠️');
+      showToast('⚠�? Please fill in Employee name', '⚠�?');
       return;
     }
     if (!SCRIPT_URL || SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
-      showToast('⚙️ Script URL not configured', '⚙️');
-      return;
-    }
-    // Guard: block submission if no ratings are selected
-    var ratingCount = Object.keys(data.ratings || {}).length;
-    if (ratingCount === 0) {
-      showToast('⚠️ No ratings selected — please complete all ratings before submitting', '⚠️');
+      showToast('⚙�? Script URL not configured', '⚙�?');
       return;
     }
     showToast('📤 Submitting…', '📤');
