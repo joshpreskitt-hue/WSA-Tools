@@ -115,6 +115,38 @@
   .dept-banner-text{font-size:13px;color:var(--gray-700);line-height:1.5;}
   .dept-banner-text strong{color:var(--dept-color);display:block;font-size:14px;}
   @media(max-width:640px){.header-inner{padding:28px 20px 22px;}.main-content{padding:24px 20px 48px;}.info-panel,.score-grid,.sig-grid,.rubric-row{grid-template-columns:1fr;}.criteria-item{grid-template-columns:1fr;}}
+
+  /* ===== PRINT BUTTON ===== */
+  .btn-print {
+    background: var(--teal, #2e7d7a);
+    color: white;
+    border: none;
+    padding: 13px 28px;
+    border-radius: 8px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-right: 12px;
+  }
+  .btn-print:hover { background: #246361; transform: translateY(-1px); }
+
+  /* ===== PRINT / PDF MEDIA QUERY ===== */
+  @media print {
+    .autosave-indicator, .eval-type-banner, .driver-slot-banner,
+    .submit-area, .rubric-toggle, .toast { display: none !important; }
+    .rubric-box { display: none !important; }
+    body { background: white !important; }
+    .page-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .section-card  { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .main-content  { padding: 16px 20px !important; }
+    .section-card, .info-panel, .score-summary, .goals-section,
+    .signature-section, .mission-block { break-inside: avoid; page-break-inside: avoid; }
+    .criteria-item { break-inside: avoid; }
+  }
 </style>
 </head>
 <body>
@@ -408,14 +440,14 @@
   </div>
 
   <div class="section-card">
-    <div class="section-header"><div class="section-icon">📝</div><div><div class="section-title">Overall Evaluator Comments</div><div class="section-subtitle">Summary narrative — to be shared with Dr. Forgette</div></div></div>
+    <div class="section-header"><div class="section-icon">�?</div><div><div class="section-title">Overall Evaluator Comments</div><div class="section-subtitle">Summary narrative — to be shared with Dr. Forgette</div></div></div>
     <div class="comment-section"><div class="comment-label">Evaluator Summary (J. Preskitt)</div><textarea id="c_overall" placeholder="Provide an overall summary of performance, growth, and development areas…" style="min-height:100px"></textarea></div>
     <div class="comment-section"><div class="comment-label">Employee Response / Self-Reflection</div><textarea id="c_employee" placeholder="Employee's response or self-reflection…" style="min-height:80px"></textarea></div>
     <div class="comment-section"><div class="comment-label">Dr. Forgette Director Notes (if applicable)</div><textarea id="c_director" placeholder="Executive Director notes or additions after review…" style="min-height:70px"></textarea></div>
   </div>
 
   <div class="signature-section">
-    <div class="goals-title" style="margin-bottom:18px;font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);">✍️ Signatures & Acknowledgment</div>
+    <div class="goals-title" style="margin-bottom:18px;font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);">�?�? Signatures & Acknowledgment</div>
     <div class="sig-grid">
       <div class="sig-field"><label>Evaluator Signature</label><input type="text" class="sig-line" id="sigEvaluator" placeholder="Sign here"></div>
       <div class="sig-field"><label>Date</label><input type="text" class="sig-date" id="sigEvalDate" placeholder="MM/DD/YYYY"></div>
@@ -428,6 +460,7 @@
 
   <div class="submit-area">
     <button class="btn-save" onclick="saveLocal()">💾 Save Draft</button>
+    <button class="btn-print" onclick="window.print()">🖨️ Print / Save PDF</button>
     <button class="btn-submit" onclick="submitEval()">Submit to Google Sheets →</button>
   </div>
 </div>
@@ -439,7 +472,7 @@
   const evalTypeLabels={BOY:'Beginning of Year (BOY)',MID:'Mid-Year',EOY:'End of Year (EOY)'};
   function setEvalType(t,b){currentEvalType=t;document.getElementById('evalTypeDisplay').textContent=evalTypeLabels[t];document.querySelectorAll('.eval-type-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');loadFromStorage();showToast(`📋 Switched to ${evalTypeLabels[t]}`);}
   function toggleRubric(id){document.getElementById(id).classList.toggle('open');}
-  function updateSummary(){const r=document.querySelectorAll('input[type="radio"]:checked');let d=0,m=0,e=0;r.forEach(x=>{if(x.value==='D')d++;else if(x.value==='M')m++;else e++;});const t=d+m+e;document.getElementById('countD').textContent=t?d:'—';document.getElementById('countM').textContent=t?m:'—';document.getElementById('countE').textContent=t?e:'—';if(!t){document.getElementById('overallRating').textContent='Complete all ratings above';return;}const p=(e*100+m*60+d*20)/(t*100)*100;document.getElementById('overallRating').textContent=p>=80?'⭐ Distinguished / Exemplary':p>=60?'✅ Proficient / Meets & Exceeds':p>=40?'🔶 Developing with Progress':'⚠️ Needs Development & Support';}
+  function updateSummary(){const r=document.querySelectorAll('input[type="radio"]:checked');let d=0,m=0,e=0;r.forEach(x=>{if(x.value==='D')d++;else if(x.value==='M')m++;else e++;});const t=d+m+e;document.getElementById('countD').textContent=t?d:'—';document.getElementById('countM').textContent=t?m:'—';document.getElementById('countE').textContent=t?e:'—';if(!t){document.getElementById('overallRating').textContent='Complete all ratings above';return;}const p=(e*100+m*60+d*20)/(t*100)*100;document.getElementById('overallRating').textContent=p>=80?'�? Distinguished / Exemplary':p>=60?'✅ Proficient / Meets & Exceeds':p>=40?'🔶 Developing with Progress':'⚠�? Needs Development & Support';}
   document.querySelectorAll('input[type="radio"]').forEach(r=>r.addEventListener('change',()=>{updateSummary();autoSave();}));
   document.querySelectorAll('input,textarea').forEach(el=>el.addEventListener('input',autoSave));
   function getStorageKey(){return`wsa_${DEPT}_${currentEvalType}`;}
@@ -475,11 +508,11 @@
   function submitEval() {
     var data = gatherData();
     if (!data.employeeName) {
-      showToast('⚠️ Please fill in Employee name', '⚠️');
+      showToast('⚠�? Please fill in Employee name', '⚠�?');
       return;
     }
     if (!SCRIPT_URL || SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
-      showToast('⚙️ Script URL not configured', '⚙️');
+      showToast('⚙�? Script URL not configured', '⚙�?');
       return;
     }
     showToast('📤 Submitting…', '📤');
