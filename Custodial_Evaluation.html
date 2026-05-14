@@ -733,6 +733,28 @@
     .signature-section, .mission-block { break-inside: avoid; page-break-inside: avoid; }
     .criteria-item { break-inside: avoid; }
   }
+
+  /* Print proxy divs that replace textareas */
+  .print-text-expand {
+    display: none;
+    width: 100%;
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    color: var(--gray-700);
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    background: #fafafa;
+    min-height: 40px;
+    box-sizing: border-box;
+  }
+  @media print {
+    .print-text-expand { display: block !important; }
+    textarea { display: none !important; }
+  }
 </style>
 </head>
 <body>
@@ -1163,7 +1185,7 @@
   <!-- SUBMIT -->
   <div class="submit-area">
     <button class="btn-save" onclick="saveLocal()">💾 Save Draft</button>
-    <button class="btn-print" onclick="window.print()">🖨️ Print / Save PDF</button>
+    <button class="btn-print">🖨️ Print / Save PDF</button>
     <button class="btn-submit" onclick="submitEval()">Submit to Google Sheets →</button>
   </div>
 
@@ -1399,6 +1421,40 @@
   document.getElementById('evalDate').value = new Date().toISOString().split('T')[0];
   loadFromStorage();
   updateSummary();
+
+  // ===== PRINT: EXPAND TEXTAREAS TO SHOW FULL CONTENT =====
+  function expandTextareasForPrint() {
+    document.querySelectorAll('textarea').forEach(function(ta) {
+      const div = document.createElement('div');
+      div.className = 'print-text-expand';
+      div.setAttribute('data-print-proxy', 'true');
+      div.textContent = ta.value || ta.placeholder || '';
+      if (!ta.value) div.style.color = '#9ca3af'; // placeholder color
+      ta.style.display = 'none';
+      ta.parentNode.insertBefore(div, ta.nextSibling);
+    });
+  }
+  function restoreTextareasAfterPrint() {
+    document.querySelectorAll('[data-print-proxy]').forEach(function(div) {
+      div.remove();
+    });
+    document.querySelectorAll('textarea').forEach(function(ta) {
+      ta.style.display = '';
+    });
+  }
+  window.addEventListener('beforeprint', expandTextareasForPrint);
+  window.addEventListener('afterprint',  restoreTextareasAfterPrint);
+  // Fallback for browsers that don't support beforeprint
+  const origPrint = window.print;
+  document.querySelector('.btn-print') && document.querySelector('.btn-print').addEventListener('click', function(e) {
+    e.stopPropagation();
+    expandTextareasForPrint();
+    setTimeout(function() {
+      window.print();
+      setTimeout(restoreTextareasAfterPrint, 1000);
+    }, 150);
+  }, true);
+
 </script>
 </body>
 </html>
