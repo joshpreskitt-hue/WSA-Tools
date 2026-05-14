@@ -90,8 +90,8 @@
   .goals-section{background:white;border:1px solid var(--gray-200);border-radius:12px;padding:24px 28px;margin-bottom:24px;}
   .goals-title{font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);margin-bottom:6px;}
   .goals-desc{font-size:13px;color:var(--gray-500);margin-bottom:18px;line-height:1.5;}
-  .goal-row{display:grid;grid-template-columns:24px 1fr;gap:12px;align-items:start;margin-bottom:12px;}
-  .goal-number{width:24px;height:24px;background:var(--gold);color:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:2px;}
+  .goal-row{display:flex;flex-direction:row;align-items:flex-start;gap:10px;margin-bottom:10px;}
+  .goal-number{width:24px;height:24px;min-width:24px;background:var(--gold);color:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;margin-top:3px;}
   .signature-section{background:white;border:1px solid var(--gray-200);border-radius:12px;padding:24px 28px;margin-bottom:24px;}
   .sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px 40px;}
   .sig-field{display:flex;flex-direction:column;gap:5px;}
@@ -101,6 +101,25 @@
   .submit-area{text-align:center;padding:8px 0 20px;}
   .btn-submit{background:var(--navy);color:white;border:none;padding:15px 48px;border-radius:8px;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 14px rgba(26,39,68,0.25);}
   .btn-submit:hover{background:#243058;transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,39,68,0.32);}
+  .btn-print {
+    background: white;
+    color: var(--teal, #2e7d7a);
+    border: 2px solid var(--teal, #2e7d7a);
+    padding: 13px 32px;
+    border-radius: 8px;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-right: 12px;
+  }
+  .btn-print:hover {
+    background: #f0f9f8;
+    transform: translateY(-1px);
+  }
   .btn-save{background:white;color:var(--navy);border:2px solid var(--navy);padding:13px 32px;border-radius:8px;font-family:'Source Sans 3',sans-serif;font-size:14px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all 0.2s;margin-right:12px;}
   .btn-save:hover{background:var(--gray-100);transform:translateY(-1px);}
   .toast{position:fixed;bottom:28px;right:28px;background:var(--navy);color:white;padding:14px 22px;border-radius:10px;font-size:14px;font-weight:500;box-shadow:0 8px 30px rgba(0,0,0,0.25);transform:translateY(80px);opacity:0;transition:all 0.3s ease;z-index:1000;display:flex;align-items:center;gap:10px;}
@@ -116,29 +135,28 @@
   .dept-banner-text strong{color:var(--dept-color);display:block;font-size:14px;}
   @media(max-width:640px){.header-inner{padding:28px 20px 22px;}.main-content{padding:24px 20px 48px;}.info-panel,.score-grid,.sig-grid,.rubric-row{grid-template-columns:1fr;}.criteria-item{grid-template-columns:1fr;}}
 
-  /* ===== PRINT BUTTON ===== */
-  .btn-print {
-    background: var(--teal, #2e7d7a);
-    color: white;
-    border: none;
-    padding: 13px 28px;
-    border-radius: 8px;
+  /* ===== PRINT PROXY DIVS ===== */
+  .print-text-expand {
+    display: none;                   /* hidden on screen */
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 8px 12px;
     font-family: 'Source Sans 3', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-right: 12px;
+    font-size: 12.5px;
+    color: #374151;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    background: #fafafa;
+    box-sizing: border-box;
+    flex: 1 1 auto;                  /* take full width when inside flex goal-row */
+    min-width: 0;
   }
-  .btn-print:hover { background: #246361; transform: translateY(-1px); }
-
   /* ===== PRINT / PDF MEDIA QUERY ===== */
   @media print {
     .autosave-indicator, .eval-type-banner, .driver-slot-banner,
-    .submit-area, .rubric-toggle, .toast { display: none !important; }
-    .rubric-box { display: none !important; }
+    .submit-area, .rubric-toggle, .rubric-box, .toast { display: none !important; }
     body { background: white !important; }
     .page-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .section-card  { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -146,28 +164,32 @@
     .section-card, .info-panel, .score-summary, .goals-section,
     .signature-section, .mission-block { break-inside: avoid; page-break-inside: avoid; }
     .criteria-item { break-inside: avoid; }
-  }
 
-  /* Print proxy divs that replace textareas */
-  .print-text-expand {
-    display: none;
-    width: 100%;
-    border: 1px solid var(--gray-200);
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-family: 'Source Sans 3', sans-serif;
-    font-size: 13px;
-    color: var(--gray-700);
-    line-height: 1.6;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    background: #fafafa;
-    min-height: 40px;
-    box-sizing: border-box;
-  }
-  @media print {
-    .print-text-expand { display: block !important; }
-    textarea { display: none !important; }
+    /* Show proxy divs, hide textareas */
+    textarea             { display: none !important; }
+    .print-text-expand   { display: block !important; }
+
+    /* Goal rows: keep flex layout, compact spacing */
+    .goal-row {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: flex-start !important;
+      gap: 8px !important;
+      margin-bottom: 6px !important;
+    }
+    .goal-number {
+      width: 20px !important; height: 20px !important;
+      min-width: 20px !important;
+      font-size: 11px !important;
+      margin-top: 3px !important;
+    }
+    /* Inside goal-row the proxy div must flex-grow */
+    .goal-row .print-text-expand {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      min-height: 0 !important;
+      padding: 4px 8px !important;
+    }
   }
 </style>
 </head>
@@ -462,14 +484,14 @@
   </div>
 
   <div class="section-card">
-    <div class="section-header"><div class="section-icon">�?</div><div><div class="section-title">Overall Evaluator Comments</div><div class="section-subtitle">Summary narrative — to be shared with Dr. Forgette</div></div></div>
+    <div class="section-header"><div class="section-icon">📝</div><div><div class="section-title">Overall Evaluator Comments</div><div class="section-subtitle">Summary narrative — to be shared with Dr. Forgette</div></div></div>
     <div class="comment-section"><div class="comment-label">Evaluator Summary (J. Preskitt)</div><textarea id="c_overall" placeholder="Provide an overall summary of performance, growth, and development areas…" style="min-height:100px"></textarea></div>
     <div class="comment-section"><div class="comment-label">Employee Response / Self-Reflection</div><textarea id="c_employee" placeholder="Employee's response or self-reflection…" style="min-height:80px"></textarea></div>
     <div class="comment-section"><div class="comment-label">Dr. Forgette Director Notes (if applicable)</div><textarea id="c_director" placeholder="Executive Director notes or additions after review…" style="min-height:70px"></textarea></div>
   </div>
 
   <div class="signature-section">
-    <div class="goals-title" style="margin-bottom:18px;font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);">�?�? Signatures & Acknowledgment</div>
+    <div class="goals-title" style="margin-bottom:18px;font-family:'Playfair Display',serif;font-size:17px;color:var(--navy);">✍️ Signatures & Acknowledgment</div>
     <div class="sig-grid">
       <div class="sig-field"><label>Evaluator Signature</label><input type="text" class="sig-line" id="sigEvaluator" placeholder="Sign here"></div>
       <div class="sig-field"><label>Date</label><input type="text" class="sig-date" id="sigEvalDate" placeholder="MM/DD/YYYY"></div>
@@ -482,7 +504,7 @@
 
   <div class="submit-area">
     <button class="btn-save" onclick="saveLocal()">💾 Save Draft</button>
-    <button class="btn-print">🖨️ Print / Save PDF</button>
+    <button class="btn-print" onclick="window.print()">🖨️ Print / Save PDF</button>
     <button class="btn-submit" onclick="submitEval()">Submit to Google Sheets →</button>
   </div>
 </div>
@@ -494,7 +516,7 @@
   const evalTypeLabels={BOY:'Beginning of Year (BOY)',MID:'Mid-Year',EOY:'End of Year (EOY)'};
   function setEvalType(t,b){currentEvalType=t;document.getElementById('evalTypeDisplay').textContent=evalTypeLabels[t];document.querySelectorAll('.eval-type-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');loadFromStorage();showToast(`📋 Switched to ${evalTypeLabels[t]}`);}
   function toggleRubric(id){document.getElementById(id).classList.toggle('open');}
-  function updateSummary(){const r=document.querySelectorAll('input[type="radio"]:checked');let d=0,m=0,e=0;r.forEach(x=>{if(x.value==='D')d++;else if(x.value==='M')m++;else e++;});const t=d+m+e;document.getElementById('countD').textContent=t?d:'—';document.getElementById('countM').textContent=t?m:'—';document.getElementById('countE').textContent=t?e:'—';if(!t){document.getElementById('overallRating').textContent='Complete all ratings above';return;}const p=(e*100+m*60+d*20)/(t*100)*100;document.getElementById('overallRating').textContent=p>=80?'�? Distinguished / Exemplary':p>=60?'✅ Proficient / Meets & Exceeds':p>=40?'🔶 Developing with Progress':'⚠�? Needs Development & Support';}
+  function updateSummary(){const r=document.querySelectorAll('input[type="radio"]:checked');let d=0,m=0,e=0;r.forEach(x=>{if(x.value==='D')d++;else if(x.value==='M')m++;else e++;});const t=d+m+e;document.getElementById('countD').textContent=t?d:'—';document.getElementById('countM').textContent=t?m:'—';document.getElementById('countE').textContent=t?e:'—';if(!t){document.getElementById('overallRating').textContent='Complete all ratings above';return;}const p=(e*100+m*60+d*20)/(t*100)*100;document.getElementById('overallRating').textContent=p>=80?'🌟 Distinguished / Exemplary':p>=60?'✅ Proficient / Meets & Exceeds':p>=40?'🔶 Developing with Progress':'⚠️ Needs Development & Support';}
   document.querySelectorAll('input[type="radio"]').forEach(r=>r.addEventListener('change',()=>{updateSummary();autoSave();}));
   document.querySelectorAll('input,textarea').forEach(el=>el.addEventListener('input',autoSave));
   function getStorageKey(){return`wsa_${DEPT}_${currentEvalType}`;}
@@ -530,11 +552,11 @@
   function submitEval() {
     var data = gatherData();
     if (!data.employeeName) {
-      showToast('⚠�? Please fill in Employee name', '⚠�?');
+      showToast('⚠️ Please fill in Employee name', '⚠️');
       return;
     }
     if (!SCRIPT_URL || SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
-      showToast('⚙�? Script URL not configured', '⚙�?');
+      showToast('⚙️ Script URL not configured', '⚙️');
       return;
     }
     showToast('📤 Submitting…', '📤');
@@ -555,38 +577,34 @@
   function showToast(msg,icon='✅'){const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;document.getElementById('toastIcon').textContent=icon;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3200);}
   document.getElementById('evalDate').value=new Date().toISOString().split('T')[0];loadFromStorage();updateSummary();
 
-  // ===== PRINT: EXPAND TEXTAREAS TO SHOW FULL CONTENT =====
+  // ===== PRINT: EXPAND TEXTAREAS (clean, no duplicates) =====
+  var _printReady = false;
+
   function expandTextareasForPrint() {
+    if (_printReady) return;
+    _printReady = true;
     document.querySelectorAll('textarea').forEach(function(ta) {
-      const div = document.createElement('div');
+      var div = document.createElement('div');
       div.className = 'print-text-expand';
       div.setAttribute('data-print-proxy', 'true');
-      div.textContent = ta.value || ta.placeholder || '';
-      if (!ta.value) div.style.color = '#9ca3af'; // placeholder color
-      ta.style.display = 'none';
-      ta.parentNode.insertBefore(div, ta.nextSibling);
+      if (ta.value) {
+        div.textContent = ta.value;
+        div.style.color = '#374151';
+      } else {
+        div.textContent = ta.placeholder || '';
+        div.style.color = '#9ca3af';
+      }
+      ta.parentNode.insertBefore(div, ta);
     });
   }
+
   function restoreTextareasAfterPrint() {
-    document.querySelectorAll('[data-print-proxy]').forEach(function(div) {
-      div.remove();
-    });
-    document.querySelectorAll('textarea').forEach(function(ta) {
-      ta.style.display = '';
-    });
+    document.querySelectorAll('[data-print-proxy]').forEach(function(d) { d.remove(); });
+    _printReady = false;
   }
+
   window.addEventListener('beforeprint', expandTextareasForPrint);
   window.addEventListener('afterprint',  restoreTextareasAfterPrint);
-  // Fallback for browsers that don't support beforeprint
-  const origPrint = window.print;
-  document.querySelector('.btn-print') && document.querySelector('.btn-print').addEventListener('click', function(e) {
-    e.stopPropagation();
-    expandTextareasForPrint();
-    setTimeout(function() {
-      window.print();
-      setTimeout(restoreTextareasAfterPrint, 1000);
-    }, 150);
-  }, true);
 
 </script>
 </body>
